@@ -302,6 +302,21 @@
     --sk-board-small-btn-p: 5px 11px;         /* 글 보기·댓글 안 작은 버튼 */
     --sk-board-small-btn-fs: 12px;
 
+    /* 게시판 · 관리자 도구 (분류 이동, 게시글 이동·복사)
+       기능: 운영자에게만 나오는 board_catemove_*, board_function_* 모듈을 작은 한 줄 도구로
+       이유: 카페24 기본은 일반 입력창 크기(54px) select와 sizeS 버튼이라 관리 도구치고 크다.
+             방문자에게는 보이지 않는 영역이라 기본값은 눈에 띄지 않는 작은 크기로 둔다 */
+    --sk-board-admin-py: 12px;                /* 위아래 여백. 좌우는 쇼핑몰 레이아웃(.section 등)이 정한다 */
+    --sk-board-admin-gap: 8px;
+    --sk-board-admin-border: var(--sk-color-border-subtle);
+    --sk-board-admin-fs: 13px;
+    --sk-board-admin-select-height: 32px;
+    --sk-board-admin-select-width: 160px;
+    --sk-board-admin-select-px: 10px;
+    --sk-board-admin-btn-p: var(--sk-board-small-btn-p);
+    --sk-board-admin-btn-fs: var(--sk-board-small-btn-fs);
+    --sk-board-admin-help-color: var(--sk-color-text-muted);
+
     /* ------------------------------------------------------------------
        회원 · 주소 (adapter: address-form, agreement-title, address-book)
        ------------------------------------------------------------------ */

@@ -27,6 +27,8 @@ cafe24-automation/
 ├── skinkit/             # 공통 스타일 시스템 (토큰 · 컴포넌트 CSS · Style Adapter)
 ├── standards/           # 표준 문서
 ├── docs/                # 분석 보고서
+├── tools/preview/       # 로컬 프리뷰 생성기 (npm run preview)
+├── preview/             # 프리뷰 결과 (자동 생성, 업로드하지 않음)
 ├── templates/           # 자동화 템플릿 (준비 중)
 ├── cloude/              # Claude 규칙·스킬 초안
 ├── agents/              # 에이전트 초안
@@ -42,9 +44,22 @@ cafe24-automation/
 | [standards/component-catalog.md](standards/component-catalog.md) | 자동화 대상 컴포넌트 목록, 마크업 계약, 검증 체크리스트 |
 | [skinkit/README.md](skinkit/README.md) | **SkinKit 사용법** (카페24 적용, 테마 만들기, 빌드) |
 | [docs/skinkit-analysis.md](docs/skinkit-analysis.md) | SkinKit 1차 분석 보고서 (공통화 대상, 변수 설계, Style Adapter) |
+| [docs/preview.md](docs/preview.md) | 로컬 프리뷰 (카페24 업로드 없이 디자인 확인), 원본과의 차이, 로컬에서 검증할 수 없는 기능 |
 | [CLAUDE.md](CLAUDE.md) | Claude Code가 따르는 작업 규칙 전체 |
 
 > 고객사 스킨 원본(`references/`, `workspace/target-skin/`)은 로컬에서만 비교용으로 쓰고 저장소에는 올리지 않습니다.
+
+## 명령어
+
+Node 20 이상이 필요합니다. 외부 패키지는 없습니다.
+
+| 명령 | 하는 일 |
+|---|---|
+| `npm run preview` | 스킨을 로컬 프리뷰 HTML로 생성 (`preview/`) |
+| `npm run preview:serve` | `preview/`를 http://localhost:5510 으로 보기 (Live Server 대신) |
+| `npm run skinkit:build` | SkinKit `dist/` 생성 + 검사 |
+| `npm run skinkit:check` | SkinKit 검사만 |
+| `npm run skinkit:install -- --skin <스킨> …` | 스킨에 SkinKit 설치 ([skinkit/README.md](skinkit/README.md)) |
 
 ## 핵심 규칙
 

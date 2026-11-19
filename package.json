@@ -1,0 +1,16 @@
+{
+  "name": "cafe24-automation",
+  "private": true,
+  "description": "카페24 스마트디자인 스킨 공통 UI(SkinKit)와 작업 자동화 도구",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "preview": "node tools/preview/build-preview.mjs",
+    "preview:serve": "node tools/preview/serve.mjs",
+    "skinkit:build": "node skinkit/tools/build.mjs",
+    "skinkit:check": "node skinkit/tools/build.mjs --check",
+    "skinkit:install": "node skinkit/tools/install.mjs"
+  }
+}

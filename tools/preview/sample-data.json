@@ -1,0 +1,160 @@
+{
+  "$comment": "카페24 템플릿 변수 {$이름}을 프리뷰에서 무엇으로 바꿀지 정하는 규칙. 위에서부터 처음 맞는 규칙을 쓴다. 디자인 확인용 최소 샘플이며 실제 데이터가 아니다",
+  "$comment_context": "변수가 놓인 위치마다 다르게 바꾼다. script 안은 문법이 깨지지 않게 0, 속성은 아래 attr 규칙, 글자는 text 규칙",
+  "script": "0",
+  "attr": {
+    "$comment": "속성 이름별 값. src는 자리표시 이미지, href는 #none, 나머지 속성은 빈 값",
+    "src": "/_preview/assets/placeholder.svg",
+    "srcset": "",
+    "href": "#none",
+    "action": "#none",
+    "onclick": "",
+    "default": ""
+  },
+  "$comment_text": "글자 위치 규칙. match는 변수 이름(필터·form. 제외)에 대한 정규식. html: true면 HTML 그대로 넣는다",
+  "text": [
+    {
+      "match": "_icon$|^icon_|_icons$|^icons?$|_img$|_image$|^image_|thumbnail|banner",
+      "value": ""
+    },
+    {
+      "match": "^checkbox$",
+      "value": "<input type=\"checkbox\" data-preview=\"checkbox\">",
+      "html": true
+    },
+    {
+      "$comment": "카페24가 <select>를 통째로 출력하는 변수 (예: board_catemove_selectbox, board_function_selectbox). 글자 '샘플'로 채우면 select 모양을 확인할 수 없다. name은 주지 않는다",
+      "match": "_selectbox$",
+      "value": "<select data-preview=\"selectbox\"><option>선택</option></select>",
+      "html": true
+    },
+    {
+      "match": "price_unit_head",
+      "value": ""
+    },
+    {
+      "match": "price_unit_tail",
+      "value": "원"
+    },
+    {
+      "match": "^name$",
+      "value": "카테고리"
+    },
+    {
+      "match": "board_name",
+      "value": "게시판"
+    },
+    {
+      "match": "mall_name|shop_name",
+      "value": "샘플 쇼핑몰"
+    },
+    {
+      "match": "keyword",
+      "value": "검색어"
+    },
+    {
+      "match": "language|country",
+      "value": "한국어"
+    },
+    {
+      "match": "product_name|prd_name|product_name_link",
+      "value": "샘플 상품명"
+    },
+    {
+      "match": "(^|_)(count|cnt|qty|quantity|no|num|n|s|rank)$",
+      "value": "1"
+    },
+    {
+      "match": "price|total|amount|sum|fee|pay|discount|mileage(?!_name)|point(?!_name)",
+      "value": "12,000"
+    },
+    {
+      "match": "mileage_name|point_name",
+      "value": "적립금"
+    },
+    {
+      "match": "date|time",
+      "value": "2026-11-19"
+    },
+    {
+      "match": "subject|title",
+      "value": "샘플 제목입니다"
+    },
+    {
+      "match": "writer|nick|member_name|user_name|^name_",
+      "value": "홍길동"
+    },
+    {
+      "match": "category",
+      "value": "카테고리"
+    },
+    {
+      "match": "option",
+      "value": "옵션: 샘플"
+    },
+    {
+      "match": "content|desc|summary|message|msg|text",
+      "value": "샘플 설명 문구입니다."
+    },
+    {
+      "match": "email",
+      "value": "sample@example.com"
+    },
+    {
+      "match": "phone|mobile|tel",
+      "value": "010-0000-0000"
+    },
+    {
+      "match": "addr|address|zip",
+      "value": "서울시 샘플구 샘플로 1"
+    },
+    {
+      "match": "delivery|shipping",
+      "value": "기본배송"
+    },
+    {
+      "match": "_class$|^class|_id$|display",
+      "value": ""
+    }
+  ],
+  "fallbackText": "샘플",
+  "$comment_form": "{$form.이름}은 카페24가 입력 요소로 바꾸는 자리다. 디자인 확인용 빈 요소를 넣는다 (name 없음 = 전송되지 않음). 위에서부터 처음 맞는 규칙",
+  "form": [
+    {
+      "match": "check|agree|is_|save_id|secret|_use$",
+      "html": "<input type=\"checkbox\" data-preview-form=\"{name}\">"
+    },
+    {
+      "match": "gender|sex|radio|type$|method",
+      "html": "<input type=\"radio\" data-preview-form=\"{name}\">"
+    },
+    {
+      "match": "passwd|password|pw",
+      "html": "<input type=\"password\" class=\"inputTypeText\" data-preview-form=\"{name}\">"
+    },
+    {
+      "match": "birth_(year|month|day)|_select$|category|bank$|cate|country|month|year",
+      "html": "<select data-preview-form=\"{name}\"><option>선택</option></select>"
+    },
+    {
+      "match": "content|memo|message|comment|_txt$",
+      "html": "<textarea data-preview-form=\"{name}\"></textarea>"
+    },
+    {
+      "match": "file|attach",
+      "html": "<input type=\"file\" data-preview-form=\"{name}\">"
+    },
+    {
+      "match": "quantity|qty",
+      "html": "<input type=\"text\" value=\"1\" data-preview-form=\"{name}\">"
+    },
+    {
+      "match": "^option",
+      "html": "<select data-preview-form=\"{name}\"><option>- [필수] 옵션을 선택해 주세요 -</option></select>"
+    },
+    {
+      "match": ".*",
+      "html": "<input type=\"text\" class=\"inputTypeText\" data-preview-form=\"{name}\">"
+    }
+  ]
+}

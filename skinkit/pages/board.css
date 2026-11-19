@@ -1,6 +1,6 @@
 /* ==========================================================================
    SkinKit · pages/board.css   (페이지: board 폴더 아래 모든 html 상단에서 불러온다)
-   기능: 카페24 게시판 기본 화면 보정 — 목록 표 / 글 보기 / 댓글 / 이전·다음 글
+   기능: 카페24 게시판 기본 화면 보정 — 목록 표 / 글 보기 / 댓글 / 이전·다음 글 / 관리자 도구
    이유: novadeal board.css(527줄)에서 카페24 기본 마크업에 해당하는 블록만 옮겼다.
    제외 (쇼핑몰마다 정책이 다르다)
      - 검색창 숨김(.xans-board-search display:none), 썸네일 칸 숨김(td.thumb)
@@ -168,6 +168,81 @@
     padding: 0;
     font-size: var(--sk-board-fs);
     line-height: 1.5;
+}
+
+/* ------------------------------------------------------------------------
+   관리자 도구 — 분류 이동(board_catemove_*) · 게시글 이동·복사(board_function_*)
+   기능: select + 버튼 + 도움말을 작은 한 줄 도구로 정리한다
+   이유: 운영자 로그인 때만 출력되는 모듈이다 (카페24 기본 스킨이 <!-- Admin only -->로 표시).
+         HTML은 고치지 않는다. 카페24 서버가 붙이는 .xans-board-catemove / .xans-board-function만 기준으로 해서
+         카페24 기본 마크업(span.gColumn)과 novadeal 마크업(span.admin-only-*)에서 모두 동작한다
+   카페24 의존성
+     - select(#board_category_move, #boardGroup)와 <a onclick="{$action_*}">는 카페24가 출력하고 연결한다.
+       모양만 바꾸고 숨기거나 옮기지 않는다
+     - 기본 css/module/board/catemove.css, function.css(.gColumn margin 10px, select 138px)를 덮는다
+   제외: 좌우 여백·폭. 쇼핑몰 레이아웃(skin4는 .sub-wrap #container .section)이 정한다
+   ------------------------------------------------------------------------ */
+:is(#wrap, body) :is(.xans-board-catemove, .xans-board-function) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sk-board-admin-gap);
+    padding-top: var(--sk-board-admin-py);
+    padding-bottom: var(--sk-board-admin-py);
+    border-top: 1px solid var(--sk-board-admin-border);
+    font-size: var(--sk-board-admin-fs);
+}
+/* 분류 이동 바로 다음의 게시글 이동·복사
+   기능: 두 도구를 선 하나로 묶는다
+   이유: 목록 페이지에서 두 모듈이 이어서 나와 위 선이 두 줄로 겹쳐 보였다 */
+:is(#wrap, body) .xans-board-catemove + .xans-board-function {
+    padding-top: 0;
+    border-top: 0;
+}
+
+/* 칸 (select 칸, 버튼 칸)
+   기능: 칸 안에서도 가운데 정렬·간격
+   이유: 카페24 기본 .gColumn { display:inline-block; margin:10px }을 gap으로 대신한다.
+         클래스(gColumn / admin-only-field …) 대신 직계 span으로 고른다 (마크업 이름이 쇼핑몰마다 다르다) */
+:is(#wrap, body) :is(.xans-board-catemove, .xans-board-function) > span:not(.ec-base-help) {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sk-board-admin-gap);
+    margin: 0;
+}
+
+/* select
+   기능: 공통 입력창 높이(54px) 대신 작은 높이
+   이유: 사용 위치 예외. 우선순위 (1,1,1) > 공통 select (1,0,1) — 작은 화면 규칙보다도 강하다 */
+:is(#wrap, body) :is(.xans-board-catemove, .xans-board-function) select {
+    width: var(--sk-board-admin-select-width);
+    max-width: 100%;
+    height: var(--sk-board-admin-select-height);
+    margin: 0;
+    padding: 0 calc(var(--sk-board-admin-select-px) + var(--sk-select-arrow-size) + 4px) 0 var(--sk-board-admin-select-px);
+    font-size: var(--sk-board-admin-fs);
+    background-position: right var(--sk-board-admin-select-px) center;
+}
+
+/* 버튼
+   기능: 이동·복사 버튼을 글 보기 작은 버튼과 같은 크기로
+   이유: 크기 클래스(sizeS)가 붙어 있어도 이 영역에서는 더 작게 쓴다 (사용 위치 예외). 우선순위 (1,3,0) > 버튼 크기 (1,2,0) */
+:is(#wrap, body) :is(.xans-board-catemove, .xans-board-function) :is(.btnNormal, .btnNormalFix, .btnSubmit, .btnSubmitFix):is(.sizeS, .sizeM, .sizeL) {
+    min-width: 0;
+    margin: 0;
+    padding: var(--sk-board-admin-btn-p);
+    font-size: var(--sk-board-admin-btn-fs);
+}
+
+/* 도움말 ("이동/복사할 게시판을 선택하세요" 등)
+   기능: 다음 줄로 내리고 흐린 색
+   이유: 카페24 기본은 position:relative; top:4px로 옆에 붙였다. 좁은 화면에서 줄바꿈이 어긋났다 */
+:is(#wrap, body) :is(.xans-board-catemove, .xans-board-function) > .ec-base-help {
+    flex-basis: 100%;
+    position: static;
+    margin: 0;
+    color: var(--sk-board-admin-help-color);
 }
 
 /* 작은 화면: 댓글 입력칸 세로 배치 */

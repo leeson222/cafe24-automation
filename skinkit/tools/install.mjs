@@ -2,7 +2,7 @@
 /* ==========================================================================
    SkinKit · tools/install.mjs
    기능: 카페24 스킨 폴더에 SkinKit을 설치·재설치·제거한다
-         1) dist/를 <스킨>/skinkit/dist로 복사
+         1) dist/를 <스킨>/skinkit/dist로 복사. <스킨>/skinkit/theme.css가 없으면 예시로 만든다 (있으면 건드리지 않는다)
          2) 레이아웃 <head>: 카페24 기본 CSS(ec-base-*) 다음에 공통(head.html) + 선택 기능 + 테마 블록
          3) 페이지 파일: @layout 다음 줄에 그 페이지 전용 CSS·JS 블록 (adapter는 불러오면 켜진다)
          4) 바뀐 파일 목록(FTP 업로드 목록)을 출력
@@ -10,7 +10,7 @@
      node skinkit/tools/install.mjs --skin <스킨 폴더> [옵션]
        --pages board,member,myshop,product | all | none   페이지 묶음 (기본: none)
        --features custom-select,inner                     선택 기능 (기본: 없음)
-       --theme 몰폴더/theme.css                            테마 파일 (스킨 루트 기준. Git Bash에서는 앞에 / 를 붙이지 않는다)
+       --theme skinkit/theme.css                          테마 파일 (기본: skinkit/theme.css. 스킨 루트 기준. Git Bash에서는 앞에 / 를 붙이지 않는다)
        --layouts layout/basic/layout.html,…              레이아웃 (기본: layout.html, main.html, popup.html 중 있는 것)
        --dry-run                                          파일을 쓰지 않고 바뀔 내용만 출력
        --uninstall                                        SkinKit 블록을 모두 지운다 (skinkit/dist 파일은 남긴다)
@@ -43,12 +43,14 @@ const UNINSTALL = flag('uninstall');
 const pageArg = opt('pages', 'none');
 const PAGES = pageArg === 'all' ? Object.keys(config.pages) : pageArg === 'none' ? [] : list(pageArg);
 const FEATURES = list(opt('features'));
-// 기능: 테마 경로를 스킨 루트 기준 "/폴더/파일.css"로 맞춘다
-// 이유: Git Bash는 "/"로 시작하는 인자를 C:/Program Files/Git/… 로 바꿔 버린다. 앞의 "/" 없이 써도 받는다
-const RAW_THEME = opt('theme');
+// 기능: 테마 경로를 스킨 루트 기준 "/폴더/파일.css"로 맞춘다. 기본은 /skinkit/theme.css
+// 이유: 스킨 안 skinkit/은 그 쇼핑몰 전용이다 (folder-structure.md 2-1). 테마도 같은 폴더에 둬서
+//       "이 스킨의 SkinKit 값은 skinkit/theme.css 한 곳"이 되게 한다. 다시 설치할 때 지우는 것은 dist/뿐이다.
+//       Git Bash는 "/"로 시작하는 인자를 C:/Program Files/Git/… 로 바꿔 버린다. 앞의 "/" 없이 써도 받는다
+const RAW_THEME = opt('theme', 'skinkit/theme.css');
 if (/^[A-Za-z]:[\\/]/.test(RAW_THEME)) {
     console.error('오류  --theme 경로가 Windows 경로로 바뀌었습니다 (Git Bash 자동 변환).');
-    console.error('      앞의 / 없이 쓰세요: --theme onjangteo_custom/theme.css');
+    console.error('      앞의 / 없이 쓰세요: --theme skinkit/theme.css');
     process.exit(1);
 }
 const THEME = RAW_THEME ? '/' + RAW_THEME.replace(/^\/+/, '') : '';
@@ -62,10 +64,21 @@ if (!SKIN || !existsSync(join(SKIN, 'layout', 'basic'))) fail('--skin에 카페2
 if (!UNINSTALL && !existsSync(join(KIT, 'dist', 'head.html'))) fail('skinkit/dist가 없습니다. 먼저 node skinkit/tools/build.mjs를 실행하세요');
 for (const p of PAGES) if (!config.pages[p]) fail(`없는 페이지 묶음: ${p} (가능: ${Object.keys(config.pages).join(', ')})`);
 for (const f of FEATURES) if (!config.features[f]) fail(`없는 선택 기능: ${f} (가능: ${Object.keys(config.features).join(', ')})`);
-if (THEME && !existsSync(join(SKIN, THEME))) fail(`테마 파일이 스킨에 없습니다: ${THEME}`);
+// 이유: --theme로 직접 지정한 파일이 없으면 오타일 가능성이 높아 멈춘다. 기본 위치(skinkit/theme.css)는 없으면 설치 때 만든다
+if (opt('theme') && !UNINSTALL && !existsSync(join(SKIN, THEME))) fail(`테마 파일이 스킨에 없습니다: ${THEME}`);
 
 const LAYOUTS = (opt('layouts') ? list(opt('layouts')) : ['layout/basic/layout.html', 'layout/basic/main.html', 'layout/basic/popup.html'])
     .filter((f) => existsSync(join(SKIN, f)));
+
+// 기능: 예전 방식(skinkit.css 한 파일) 선언이 남아 있으면 아무것도 바꾸기 전에 멈춘다
+// 이유: 이 검사가 dist 복사 뒤에 있어서, 멈춰도 스킨의 skinkit/dist(skinkit.css)가 이미 지워진 채 남았다.
+//       그 상태로 FTP에 올리면 레이아웃이 없는 파일을 불러 화면이 깨진다 (2026-11-19 skin4 사본 시험에서 확인)
+const LEGACY = /\/skinkit\/dist\/skinkit\.(css|js)/;
+for (const rel of LAYOUTS) {
+    const lines = readFileSync(join(SKIN, rel), 'utf8').split(/\r?\n/);
+    const at = lines.findIndex((l) => LEGACY.test(l) && !l.includes('[SKINKIT:'));
+    if (at > -1) fail(`${rel}:${at + 1} 예전 방식(skinkit.css 한 파일) 선언이 있습니다. 그 블록을 지운 뒤 다시 실행하세요 (아무 파일도 바꾸지 않았습니다)`);
+}
 
 // ----------------------------------------------------------------
 // 파일 도구
@@ -230,6 +243,16 @@ if (!UNINSTALL) {
         rmSync(target, { recursive: true, force: true });
         mkdirSync(target, { recursive: true });
         cpSync(join(KIT, 'dist'), target, { recursive: true });
+    }
+    // 기능: 테마가 없으면 예시 파일로 만든다
+    // 이유: 테마는 쇼핑몰 값이라 공통 원본을 다시 설치해도 덮어쓰면 안 된다. 있으면 절대 건드리지 않는다
+    const themeFile = join(SKIN, THEME.replace(/^\/+/, ''));
+    if (!existsSync(themeFile)) {
+        if (!DRY) {
+            mkdirSync(dirname(themeFile), { recursive: true });
+            cpSync(join(KIT, 'themes', 'theme.example.css'), themeFile);
+        }
+        console.log(`  테마 없음 → 예시로 만듦: ${THEME} (값을 쇼핑몰에 맞게 바꾸세요)`);
     }
     // 기능: dist 안 모든 파일을 업로드 목록에 넣는다 (Node 20 이상: readdirSync recursive)
     for (const p of readdirSync(join(KIT, 'dist'), { recursive: true })) {

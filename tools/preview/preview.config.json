@@ -1,0 +1,28 @@
+{
+  "$comment": "로컬 프리뷰 설정. npm run preview 가 이 파일을 읽는다. --skin, --pages 인자로 덮어쓸 수 있다",
+
+  "$comment_skin": "프리뷰할 카페24 스킨 폴더 (저장소 루트 기준). 원본은 읽기만 한다",
+  "skin": "workspace/target-skin/skin4",
+
+  "$comment_out": "결과 폴더 (저장소 루트 기준, .gitignore 대상). 실행할 때마다 지우고 다시 만든다",
+  "out": "preview",
+
+  "$comment_pages": "프리뷰할 페이지. name = 결과 파일 이름(_preview/name.html), src = 스킨 루트 기준 원본 페이지",
+  "pages": [
+    { "name": "main",           "title": "메인",            "src": "index.html" },
+    { "name": "product-list",   "title": "상품 목록",        "src": "product/list.html" },
+    { "name": "product-detail", "title": "상품 상세",        "src": "product/detail.html" },
+    { "name": "basket",         "title": "장바구니",         "src": "order/basket.html" },
+    { "name": "login",          "title": "로그인",          "src": "member/login.html" },
+    { "name": "join",           "title": "회원가입",         "src": "member/join.html" },
+    { "name": "myshop",         "title": "마이쇼핑",         "src": "myshop/index.html" },
+    { "name": "board-list",     "title": "게시판 목록",      "src": "board/free/list.html" },
+    { "name": "board-read",     "title": "게시판 글 보기",    "src": "board/free/read.html" }
+  ],
+
+  "$comment_adminOnly": "운영자 로그인 때만 출력되는 모듈. 프리뷰는 모든 모듈을 보여 주므로 여기 적힌 모듈은 data-preview-admin 표시를 붙이고 기본으로 숨긴다 (화면 왼쪽 아래 토글로 보기). * = 아무 글자. 근거: 카페24 기본 스킨이 이 두 모듈을 <!-- Admin only -->로 감쌌다. 다른 관리자 전용 모듈은 [확인 필요]",
+  "adminOnly": ["board_catemove_*", "board_function_*"],
+
+  "$comment_jquery": "카페24는 쇼핑몰 페이지에 jQuery를 자동으로 넣는다. 로컬에는 없어서 스킨 JS가 멈추므로 대신 넣는다. 버전은 [확인 필요]. 빈 문자열이면 넣지 않는다 (--no-jquery)",
+  "jquery": "https://code.jquery.com/jquery-1.12.4.min.js"
+}

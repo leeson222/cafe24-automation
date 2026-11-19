@@ -75,6 +75,7 @@
 | 항목 | 내용 | 상태 |
 |---|---|---|
 | 공통 네임스페이스 | `skinkit/` (회사명 사용 안 함). 프로젝트 전용 코드는 쇼핑몰 이름 폴더에 둔다 | [결정] |
+| SkinKit 원본과 스킨 사본 | 루트 `skinkit/` = 공통 원본(FTP에 안 올림). 스킨 안 `skinkit/` = 그 쇼핑몰 전용. 스킨 값은 `<스킨>/skinkit/theme.css`에만 쓰고 `dist/`는 직접 고치지 않는다 (설치 때 다시 복사됨). 루트 기본값 변경은 사용자 확인 후. 상세: [folder-structure.md 2-1](standards/folder-structure.md) | [결정] 2026-11-19 |
 | `data-ez*` 제거 | 유지하되 **옵트인**으로 바꾼다. `<html data-sk-strip-ez>`가 있는 스킨에서만 동작한다 | [결정] |
 | jQuery | 카페24 jQuery는 그대로 두고, skinkit은 jQuery 3.7.1을 `noConflict(true)`로 격리해서 `SkinKit.$`로 쓴다 | [결정] |
 | Swiper | 전역 `Swiper`는 카페24 기본 4.5.1로 유지한다. skinkit은 Swiper 11을 격리해서 `SkinKit.Swiper`로 쓴다 | [결정]. 고정할 패치 버전은 [확인 필요] |

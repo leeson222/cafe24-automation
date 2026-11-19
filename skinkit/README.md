@@ -3,7 +3,8 @@
 카페24 스마트디자인 스킨의 **기본 UI 스타일을 통일**하고, 쇼핑몰마다 다른 디자인을 **변수(토큰)만 바꿔서** 적용하는 공통 스타일 시스템입니다.
 
 - 카페24 클래스명(`btnNormal`, `sizeS`, `ec-base-layer` …)을 그대로 씁니다. HTML을 고칠 필요가 없습니다.
-- 컴포넌트 CSS는 값 대신 토큰(`var(--sk-…)`)만 씁니다. 쇼핑몰은 `theme.css`에서 `:root` 값만 바꿉니다.
+- 컴포넌트 CSS는 값 대신 토큰(`var(--sk-…)`)만 씁니다. 쇼핑몰은 스킨 안 `skinkit/theme.css`에서 `:root` 값만 바꿉니다.
+- 저장소 루트 `skinkit/`은 공통 원본, 스킨 폴더 안 `skinkit/`(`dist/` + `theme.css`)은 그 쇼핑몰 전용입니다. 스킨 값은 `theme.css`에만 씁니다. `dist/`는 설치할 때마다 지우고 다시 복사합니다 (`standards/folder-structure.md` 2-1).
 - 파일은 **기능별·페이지별**로 나뉩니다. 공통은 모든 페이지에서, 페이지 전용은 그 페이지에서만 불러옵니다.
 - **불러오면 켜집니다.** 선택 기능과 Adapter(스타일용 DOM 변경)는 파일을 불러온 페이지에서만 동작합니다.
 
@@ -16,7 +17,7 @@
 | 구분 | 파일 (`dist/` 기준) | 불러오는 곳 |
 |---|---|---|
 | **공통** | `tokens/` · `base/` · `components/`(버튼, 입력, 체크, 수량, 페이지) · `cafe24/`(레이어, 아이콘, 빈 상태) · `adapters/core.js` | 레이아웃 `<head>`에서 `head.html` 한 줄 |
-| **페이지** | `pages/board.css` | `board/` 아래 모든 페이지 |
+| **페이지** | `pages/board.css` (목록·글 보기·댓글·이전/다음 글·관리자 도구) | `board/` 아래 모든 페이지 |
 | | `pages/member.css` + `adapters/address-form.js`, `agreement-title.js` | `member/join.html`, `modify.html`, `agreement.html` |
 | | `pages/myshop.css` + `adapters/address-book.js` | `myshop/addr/list.html` |
 | | `pages/product.css` (기본정보 표 → "항목명 \| 값" 줄 목록) | `product/detail.html` |
@@ -33,16 +34,16 @@
 node skinkit/tools/build.mjs        # dist 만들기 (원본을 고쳤을 때)
 
 node skinkit/tools/install.mjs --skin workspace/target-skin/skin4 \
-     --pages board --theme onjangteo_custom/theme.css --dry-run    # 미리보기
+     --pages board --dry-run    # 미리보기
 node skinkit/tools/install.mjs --skin workspace/target-skin/skin4 \
-     --pages board --theme onjangteo_custom/theme.css              # 설치
+     --pages board              # 설치 (테마: skinkit/theme.css, 없으면 예시로 만든다)
 ```
 
 | 옵션 | 뜻 |
 |---|---|
 | `--pages board,member,myshop,product` / `all` / `none` | 설치할 페이지 묶음 (기본 none) |
 | `--features custom-select,inner` | 선택 기능 |
-| `--theme 몰폴더/theme.css` | 쇼핑몰 테마 (스킨 루트 기준. Git Bash에서는 앞에 `/`를 붙이지 않는다) |
+| `--theme 경로` | 테마 위치를 바꿀 때만 (기본 `skinkit/theme.css`, 스킨 루트 기준. Git Bash에서는 앞에 `/`를 붙이지 않는다). 기본 위치에 파일이 없으면 `themes/theme.example.css`로 만들고, 있으면 덮어쓰지 않는다 |
 | `--layouts …` | 레이아웃 파일 (기본: `layout.html`, `main.html`, `popup.html` 중 있는 것) |
 | `--dry-run` | 파일을 쓰지 않고 바뀔 내용만 출력 |
 | `--uninstall` | SkinKit 블록을 모두 지운다 (`skinkit/dist` 파일은 남긴다) |
@@ -62,7 +63,7 @@ node skinkit/tools/install.mjs --skin workspace/target-skin/skin4 \
 <!-- layout/basic/layout.html, popup.html … (head 안, 카페24 기본 CSS 다음) -->
 <!--[SKINKIT:head]-->
 <!--@import(/skinkit/dist/head.html)-->
-<!--@css(/onjangteo_custom/theme.css)-->
+<!--@css(/skinkit/theme.css)-->
 <!--[/SKINKIT:head]-->
 
 <!-- member/join.html (@layout 다음 줄) -->
@@ -97,7 +98,7 @@ window.SkinKitConfig = {
 
 ## 2. 쇼핑몰 테마 만들기
 
-`themes/theme.example.css`를 복사해서 값만 바꿉니다. 위에서부터 바꾸고, 결과가 다를 때만 아래로 내려갑니다.
+설치하면 `<스킨>/skinkit/theme.css`가 `themes/theme.example.css`로 만들어집니다. 값만 바꿉니다. 위에서부터 바꾸고, 결과가 다를 때만 아래로 내려갑니다.
 
 | 순서 | 바꾸는 곳 | 예 | 영향 |
 |---|---|---|---|
@@ -126,7 +127,7 @@ Fix   최소 너비만 고정                                      → --sk-btn-
 
 ### 이미 디자인된 스킨에 넣을 때
 
-1. 넣기 전 화면의 계산된 스타일을 측정해서 테마 값으로 옮긴다 (skin4 예: `workspace/target-skin/skin4/onjangteo_custom/theme.css`)
+1. 넣기 전 화면의 계산된 스타일을 측정해서 테마 값으로 옮긴다 (skin4 예: `workspace/target-skin/skin4/skinkit/theme.css`)
 2. 쇼핑몰 CSS의 `!important`는 SkinKit보다 강하다. 그대로 두면 기존 모양이 유지된다
 3. 페이지 묶음·선택 기능은 쇼핑몰 화면을 바꾸지 않는 것만 설치한다 (skin4: `board`만. `.inner`를 직접 정의하므로 `inner`는 설치하지 않음). 레이아웃 폭(`--sk-max-container`)도 테마에 맞춰 둔다
 4. 쇼핑몰 CSS가 `!important`로 상태(비활성 등)까지 덮는 곳은 쇼핑몰 CSS 쪽을 고친다 (`[SKINKIT]` 주석으로 원본 보관)

@@ -28,6 +28,7 @@
 | 19 | FAQ 아코디언 | D | novadeal `faq.js` | 검토 필요 |
 | 20 | 공유하기 | C | novadeal `common.js` | 검토 필요 |
 | 21 | 장바구니 수량 배지 | A | novadeal `layout.js` (두 블록 통합) | 설계 |
+| 22 | 게시판 관리자 도구 (분류 이동, 게시글 이동·복사) | B | novadeal `board.css` 개선 (마크업 변경 없이 CSS만) | 구현 (`pages/board.css`) |
 
 ### 제외 (E)
 
@@ -218,6 +219,40 @@
 - **목적**: 0이면 숨기고, 100 이상이면 `99+`로 표시한다
 - **레퍼런스 대비 개선점**: novadeal은 같은 요소를 두 블록이 각각 감시했고, 그중 하나는 문서 전체의 텍스트 변화를 감시했다 → 하나로 합치고 `.EC-Layout-Basket-count` 요소만 감시
 - **카페24 의존성**: `Layout_orderBasketcount` 모듈과 `.EC-Layout-Basket-count` 클래스
+
+### 22) 게시판 관리자 도구 (B)
+
+- **목적**: 운영자에게만 나오는 분류 이동(`board_catemove_*`), 게시글 이동·복사(`board_function_*`)를 작은 한 줄 도구로 정리한다
+- **대상**: `board/*/list.html`(두 모듈), `board/*/read.html`(`board_function_*`). skin4 기준 7개 파일
+- **출력 조건**: 운영자 로그인 때만 출력된다. 카페24 기본 스킨이 `<!-- Admin only -->`로 감쌌다. 부운영자 권한 등 정확한 조건은 [확인 필요]
+- **마크업 계약**: **바꾸지 않는다.** 아래 요소만 있으면 래퍼 class(`gColumn`, `admin-only-*` 등)는 무엇이든 된다
+  ```html
+  <!-- 기능: 카페24 기본 마크업 그대로
+       이유: CSS는 카페24 서버가 붙이는 .xans-board-catemove / .xans-board-function과 직계 span만 고른다 -->
+  <div class="section" module="board_function_1002">
+      <span class="gColumn">{$board_function_selectbox}</span>          <!-- select (카페24 출력) -->
+      <span class="gColumn">
+          <a href="#none" class="btnNormal sizeS" onclick="{$action_article_move}">{$article_move}</a>
+          <a href="#none" class="btnNormal sizeS" onclick="{$action_article_copy}">{$article_copy}</a>
+      </span>
+      <span class="ec-base-help">{$board_function_help|replace:*,}</span>
+  </div>
+  ```
+- **지키는 것**: `module` 속성, 변수 위치(모듈 안), `<a onclick="{$action_*}">`, select(`#board_category_move`, `#boardGroup`)
+- **CSS** (`skinkit/pages/board.css`): flex 한 줄 + gap, select 높이 32px, 버튼은 글 보기 작은 버튼 크기, 도움말은 다음 줄, 분류 이동 바로 뒤의 게시글 이동·복사는 위 선을 없애 하나로 묶는다. 좌우 여백·폭은 쇼핑몰 레이아웃에 맡긴다
+- **토큰**: `--sk-board-admin-{py, gap, border, fs, select-height, select-width, select-px, btn-p, btn-fs, help-color}`
+- **레퍼런스 비교**
+  - skin4: 카페24 기본 마크업·CSS 그대로 (`.gColumn { margin:10px }`, select 138px, 도움말 `top:4px`)
+  - novadeal: class를 `admin-only-control/field/actions`로 바꾸고 `div.admin-only-wrap`을 더했다. 이름이 명확하고 폭을 래퍼가 맡는 점은 좋다
+- **레퍼런스 대비 개선점**
+  - novadeal은 마크업을 4개 파일에서 손으로 바꿨다 → 마크업은 그대로 두고 CSS만 쓴다. 기본 마크업과 novadeal 마크업 모두에서 동작한다
+  - novadeal `function.css`에 더는 맞는 요소가 없는 `.gColumn` 규칙이 남았다, `catemove.css`는 비운 채 `@css` 호출은 남았다 → 해당 없음 (기본 CSS를 덮어쓴다)
+  - novadeal 버튼은 `!important` 5개로 덮었다 → 우선순위 (1,3,0)으로 처리, `!important` 없음
+- **B 조건**
+  - [ ] 쇼핑몰 CSS가 이 영역을 `!important`로 꾸미는지 확인한다 (skin4 `onjangteo_custom/css/board.css`: `.xans-board-function .btnNormal { height: 4rem !important }` → 버튼 40px, select 32px로 높이가 어긋난다. 테마에서 `--sk-board-admin-select-height: 40px`로 맞추거나 쇼핑몰 규칙을 정리한다)
+  - [ ] 래퍼 class `section`이 레이아웃을 잡는지 확인한다 (skin4는 `.sub-wrap #container .section`이 폭·가운데 정렬). 마크업을 바꾸지 않으므로 보통 영향 없음
+  - [ ] custom-select 기능을 켠 쇼핑몰은 이 select도 바뀐다. 이동·복사가 그대로 되는지 확인한다
+- **검증**: 운영자 계정으로 분류 이동, 게시글 이동, 게시글 복사를 한 번씩 실행한다. 비로그인·일반 회원 화면에 이 영역이 나오지 않는다. 로컬 프리뷰에서는 "관리자 전용 영역 보기" 토글로 모양을 확인한다 (2026-11-19 skin4 복사본에 설치해 PC 1440px·모바일 390px 확인)
 
 ---
 

@@ -45,10 +45,35 @@ skin/                              ← 카페24 스킨 루트 (예: skin15)
 │  └─ partials/                    ← <!--@import--> 대상 HTML 조각 (layout/, components/, modal/, env/)  [제안]
 │
 └─ {mall}/                         ← 쇼핑몰 전용 (예: novadeal/). 자동화 대상 아님
-   ├─ theme.css                    ← SkinKit 토큰 값 (themes/theme.example.css 복사)
    ├─ assets/css, assets/js        ← API 연동, SSO, 기획전 등 그 몰에서만 쓰는 코드
    └─ partials/
 ```
+
+> 위 `skinkit/` 트리는 **저장소 루트의 공통 원본** 구조다. 스킨 폴더 안에는 아래 2-1처럼 `dist/`와 `theme.css`만 들어간다.
+
+### 2-1. SkinKit 원본과 스킨 사본 [결정] (2026-11-19)
+
+쇼핑몰마다 FTP 서버가 따로 있고, 한 쇼핑몰에 다른 쇼핑몰 스킨은 들어가지 않는다. 작업은 **스킨 폴더 단위**로 한다.
+
+```
+cafe24-automation/
+├─ skinkit/                          ← 공통 원본. 모든 스킨의 출발점. FTP에 올리지 않는다
+└─ workspace/target-skin/skin4/      ← FTP에서 받은 스킨 하나
+   └─ skinkit/                       ← 이 스킨 전용. FTP에 올린다
+      ├─ dist/                       ← 공통 원본의 빌드 사본. 설치할 때마다 지우고 다시 복사한다 → 직접 고치지 않는다
+      └─ theme.css                   ← 이 스킨의 SkinKit 값. 설치해도 덮어쓰지 않는다 → 스킨 값은 여기서만 고친다
+```
+
+| 하고 싶은 일 | 고칠 곳 | 하지 않는 것 |
+|---|---|---|
+| 이 스킨의 색·크기·둥글기 바꾸기 | `<스킨>/skinkit/theme.css` 한 곳 | `<스킨>/skinkit/dist/` 직접 수정 (다시 설치하면 사라지고, theme이 덮어써서 효과도 없다) |
+| 공통 원본의 버그·기능을 이 스킨에 받기 | 루트 `skinkit/` 수정 → `npm run skinkit:build` → `npm run skinkit:install -- --skin <스킨>` | — |
+| 앞으로 만들 스킨의 기본값 바꾸기 | 루트 `skinkit/tokens/*.css` | 이미 작업한 스킨은 다시 설치해야 바뀐다. 기존 스킨의 theme 값이 있으면 theme이 이긴다 |
+| 프리뷰에서 값 시험하기 | `<스킨>/skinkit/theme.css`를 고치고 `npm run preview` | `preview/` 안 파일 수정 (프리뷰를 다시 만들면 사라진다) |
+
+- 테마 기본 위치는 `/skinkit/theme.css`다. 설치 스크립트는 이 파일이 **없을 때만** `themes/theme.example.css`로 만들고, 있으면 건드리지 않는다.
+- 루트 원본의 기본값(`tokens/`)을 바꾸는 것은 모든 스킨의 출발점을 바꾸는 일이라 사용자 확인을 받는다.
+- FTP 업로드: `skinkit/dist/`, `skinkit/theme.css`를 먼저 올리고 레이아웃·페이지 파일을 마지막에 올린다 (설치 스크립트가 목록을 출력한다).
 
 ### 폴더를 나누는 기준
 
@@ -58,7 +83,7 @@ skin/                              ← 카페24 스킨 루트 (예: skin15)
 | 특정 쇼핑몰의 API, 회원 체계, 디자인에 묶여 있는가? | `{mall}/` |
 | 도메인, 인증 키, 추적 코드처럼 운영 환경에 따라 달라지는가? | `skinkit/partials/env/` (값은 쇼핑몰별로 채운다) |
 | 카페24 기본 UI의 모양만 바꾸는가? | `skinkit/components/`(공통 UI) 또는 `skinkit/cafe24/`(화면별 보정) |
-| 쇼핑몰마다 다른 디자인 값인가? | `{mall}/theme.css`의 토큰 |
+| 쇼핑몰마다 다른 디자인 값인가? | `<스킨>/skinkit/theme.css`의 토큰 (2-1) |
 
 ## 3. SEO·운영 설정 분리
 
@@ -143,7 +168,7 @@ skin/                              ← 카페24 스킨 루트 (예: skin15)
            이 블록은 tools/install.mjs가 카페24 기본 CSS(ec-base-*) 다음에 넣는다 (SKINKIT:head 표시) -->
 <!--@import(/skinkit/dist/head.html)-->
 <!--@css(/skinkit/dist/features/…)-->   (선택 기능을 설치한 경우)
-<!--@css(/{mall}/theme.css)-->
+<!--@css(/skinkit/theme.css)-->              (이 스킨 전용 값, 2-1)
 <!--@css(/{mall}/assets/css/…)-->
 
 <!-- ⑦ 쇼핑몰 전용 JS
@@ -214,8 +239,10 @@ if (!header || !fixed_margin) return;
 | `skin2/layout/basic/js/layout.js` | 검색 미사용으로 load 핸들러의 `searchLayer()` 호출 주석 처리 (검색 레이어가 없으면 null 오류) | skin2(단양더덕농산), 2026-11-17 |
 | `skin2/layout/basic/layout.html`, `popup.html` | 장바구니를 insanga 방식으로 교체하면서 노바딜 `basket.js` 호출 삭제 | skin2(단양더덕농산), 2026-11-17 |
 | `skin2/layout/basic/popup.html` | `project.css`·`promo.css`·`sub_main.css`·`project.js` 호출 삭제 | skin2(단양더덕농산), 2026-11-17 |
-| `skin4/layout/basic/layout.html`, `main.html`, `popup.html` | `<head>` 카페24 기본 CSS 다음에 SkinKit 블록(`SKINKIT:head` — `head.html` + `onjangteo_custom/theme.css`). `tools/install.mjs`로 설치 (처음 손으로 넣은 한 파일 방식 블록은 지움) | skin4(onjangteo), 2026-11-19 |
+| `skin4/layout/basic/layout.html`, `main.html`, `popup.html` | `<head>` 카페24 기본 CSS 다음에 SkinKit 블록(`SKINKIT:head` — `head.html` + 테마). `tools/install.mjs`로 설치 (처음 손으로 넣은 한 파일 방식 블록은 지움) | skin4(onjangteo), 2026-11-19 |
 | `skin4/board/**/*.html` (42개) | `@layout` 다음 줄에 `SKINKIT:page board` 블록 (`pages/board.css`). `tools/install.mjs --pages board` | skin4(onjangteo), 2026-11-19 |
+| `skin4/layout/basic/layout.html`, `main.html`, `popup.html`, `board/**/*.html` | **2026-11-19 재설치**: workspace의 skin4에는 위 두 줄의 설치가 남아 있지 않았다(예전 한 파일 방식 `skinkit.css`·`skinkit.js`만 있었음). 예전 블록(설명 주석 + 3줄)을 지우고 `npm run skinkit:install -- --skin workspace/target-skin/skin4 --pages board`로 다시 설치했다. 예전에 꺼져 있던 adapter가 켜지지 않도록 member·myshop·product 묶음은 넣지 않았다 | skin4(onjangteo), 2026-11-19 |
+| `skin4/onjangteo_custom/theme.css` → `skin4/skinkit/theme.css` | 테마를 스킨 skinkit 폴더로 옮겼다 (2-1). 입력창 둥글기 0px → 10px, select 12px 지정 삭제(입력창 값을 따른다). FTP 서버의 예전 `onjangteo_custom/theme.css`는 레이아웃이 더는 부르지 않는다 | skin4(onjangteo), 2026-11-19 |
 | `skin4/onjangteo_custom/css/comm.css` | `.btnSubmit` 배경·hover `!important`에 `:not(.disabled)` 추가, 라디오 선택 이미지 규칙을 SkinKit 토큰으로 대체 (원본은 `[SKINKIT]` 주석에 보관) | skin4(onjangteo), 2026-11-19 — 쇼핑몰 CSS라 카페24 기본 파일은 아니지만 함께 기록 |
 
 > [제안] `#header`를 참조하는 카페24 함수가 깨지지 않게 하는 다른 방법(예: 빈 `#header` 요소 유지)도 검토해서 패치를 없앨 수 있는지 확인한다.
