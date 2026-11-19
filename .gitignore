@@ -25,3 +25,7 @@ Thumbs.db
 desktop.ini
 .vscode/
 .idea/
+
+# 카페24 기본 스킨 사본 (templates/base-skin 등, 업로드 금지)
+# 이유: 스킨 사본은 저장소에 넣지 않는다 (workspace/target-skin/과 같은 방침)
+templates/

@@ -1,6 +1,6 @@
 /* ==========================================================================
-   SkinKit · features/custom-select.js   (선택 기능 — 이 파일을 불러오면 켜진다. features/custom-select.css와 함께)
-   기능: 원본 <select>를 화면에서 숨기고 ul/li 커스텀 select(features/custom-select.css)를 바로 뒤에 만든다.
+   SkinKit · components/custom-select.js   (공통 — head.html에서 모든 페이지에 불러온다. 2026-11-19 선택 기능에서 공통으로 옮김)
+   기능: 원본 <select>를 화면에서 숨기고 ul/li 커스텀 select(components/custom-select.css)를 바로 뒤에 만든다.
          원본 select는 그대로 남아 값 전송·카페24 이벤트를 담당한다 (프록시 방식).
    이유: 원본 select는 브라우저마다 목록 모양이 달라 시안대로 꾸밀 수 없다.
          novadeal dropdown.js(전체 select)와 basket.js(옵션 변경 레이어)에 따로 있던 코드를 합쳤다.
@@ -88,6 +88,39 @@
     }
 
     // ----------------------------------------------------------------
+    // 기능: 원본 select가 받던 너비를 커스텀 select에 넣는다
+    // 이유: 쇼핑몰·카페24 CSS는 select 너비를 id로 정한다 (skin4: #birth_year { width: 24% !important }).
+    //       커스텀 select에는 id가 없어 너비를 잃고 글자 폭(44px)으로 줄었다 (2026-11-19 skin4 회원가입에서 확인).
+    //       숨김 class를 잠깐 빼고 같은 프레임 안에서 재기 때문에 화면에 깜빡임이 없다.
+    //       %·미디어쿼리 너비도 따라가도록 부모 크기가 바뀔 때 다시 잰다.
+    //       0이면(레이어가 닫혀 있어 display:none 등) 넣지 않고, 보일 때 다시 잰다
+    // ----------------------------------------------------------------
+    function syncWidth(instance) {
+        var select = instance.select;
+        if (!select.isConnected) return;
+        select.classList.remove('sk-visually-hidden');
+        var width = select.getBoundingClientRect().width;
+        select.classList.add('sk-visually-hidden');
+        if (width > 0) instance.root.style.width = Math.round(width) + 'px';
+    }
+
+    // 기능: 부모 크기 변화 감시 (감시자 하나를 모든 인스턴스가 함께 쓴다)
+    // 이유: 창 크기, 레이어 열림, 탭 전환으로 부모 폭이 바뀌면 % 너비가 달라진다
+    var resizeObserver = null;
+    function watchWidth(instance) {
+        if (!('ResizeObserver' in window) || !instance.select.parentElement) return;
+        if (!resizeObserver) {
+            resizeObserver = new ResizeObserver(function (entries) {
+                var parents = entries.map(function (entry) { return entry.target; });
+                instances.forEach(function (item) {
+                    if (parents.indexOf(item.select.parentElement) > -1) syncWidth(item);
+                });
+            });
+        }
+        resizeObserver.observe(instance.select.parentElement);
+    }
+
+    // ----------------------------------------------------------------
     // 기능: 커스텀 마크업을 만든다
     // 이유: 글자는 textContent로만 넣는다 (상품명 등에 들어 있는 HTML이 실행되지 않게)
     // ----------------------------------------------------------------
@@ -151,6 +184,9 @@
 
         var instance = { select: select, root: root, button: button, text: text, list: list, signature: '', activeIndex: -1 };
         instances.push(instance);
+
+        syncWidth(instance);
+        watchWidth(instance);
 
         bindInstance(instance);
         renderOptions(instance);

@@ -1,6 +1,7 @@
+/*! SkinKit components/custom-select.css — 자동 생성. 직접 고치지 말고 skinkit/components/custom-select.css을 고친 뒤 다시 빌드한다 (bp layout 1024 / small 767) */
 /* ==========================================================================
-   SkinKit · features/custom-select.css   (선택 기능 — features/custom-select.js와 함께 불러오면 켜진다)
-   기능: 커스텀 select 모양 (features/custom-select.js가 만든 마크업)
+   SkinKit · components/custom-select.css   (공통 — head.html에서 모든 페이지에 불러온다. 2026-11-19 선택 기능에서 공통으로 옮김)
+   기능: 커스텀 select 모양 (components/custom-select.js가 만든 마크업)
    이유: 원본 select는 브라우저마다 목록 모양이 달라 시안대로 꾸밀 수 없다.
          novadeal의 ul/li 구조와 클래스명(custom-select*)을 그대로 쓴다.
 

@@ -22,7 +22,7 @@
 | 13 | 링크 없는 배너매니저 처리 | A | novadeal | 설계 |
 | 14 | 상품 옵션 표 CSS 블록화 | B | novadeal `products.css` | 설계 |
 | 15 | 상품 옵션 프록시 UI | C | novadeal `product.js` | 검토 필요 |
-| 16 | custom-select | C | novadeal `dropdown.js` | 검토 필요 |
+| 16 | custom-select (일반 select → ul/li) | A (필수, 공통) | novadeal `dropdown.js` + `basket.js` 통합 | 구현 (`components/custom-select`) |
 | 17 | 상품 기본정보 표 재배치 | D | heodakmkt 방식 개선 | 검토 필요 |
 | 18 | 상품 상세정보 더보기 | B | novadeal `prod_detail.js` | 설계 |
 | 19 | FAQ 아코디언 | D | novadeal `faq.js` | 검토 필요 |
@@ -251,7 +251,7 @@
 - **B 조건**
   - [ ] 쇼핑몰 CSS가 이 영역을 `!important`로 꾸미는지 확인한다 (skin4 `onjangteo_custom/css/board.css`: `.xans-board-function .btnNormal { height: 4rem !important }` → 버튼 40px, select 32px로 높이가 어긋난다. 테마에서 `--sk-board-admin-select-height: 40px`로 맞추거나 쇼핑몰 규칙을 정리한다)
   - [ ] 래퍼 class `section`이 레이아웃을 잡는지 확인한다 (skin4는 `.sub-wrap #container .section`이 폭·가운데 정렬). 마크업을 바꾸지 않으므로 보통 영향 없음
-  - [ ] custom-select 기능을 켠 쇼핑몰은 이 select도 바뀐다. 이동·복사가 그대로 되는지 확인한다
+  - [ ] custom-select(공통)로 이 select도 ul/li로 바뀐다. 이동·복사가 그대로 되는지 확인한다 (`pages/board.css`가 커스텀 select도 작은 크기로 맞춘다)
 - **검증**: 운영자 계정으로 분류 이동, 게시글 이동, 게시글 복사를 한 번씩 실행한다. 비로그인·일반 회원 화면에 이 영역이 나오지 않는다. 로컬 프리뷰에서는 "관리자 전용 영역 보기" 토글로 모양을 확인한다 (2026-11-19 skin4 복사본에 설치해 PC 1440px·모바일 390px 확인)
 
 ---

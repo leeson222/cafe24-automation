@@ -226,6 +226,20 @@
     background-position: right var(--sk-board-admin-select-px) center;
 }
 
+/* 커스텀 select (components/custom-select — 공통)
+   기능: 원본 select 대신 보이는 ul/li 선택창도 같은 작은 크기로
+   이유: custom-select가 공통이 되어 원본 select는 숨겨지고 .custom-select가 보인다.
+         토큰(--sk-cselect-*)을 이 영역에서만 바꿔서 custom-select.css를 건드리지 않는다 */
+:is(#wrap, body) :is(.xans-board-catemove, .xans-board-function) .custom-select {
+    --sk-cselect-height: var(--sk-board-admin-select-height);
+    --sk-cselect-height-sm: var(--sk-board-admin-select-height);
+    --sk-cselect-px: var(--sk-board-admin-select-px);
+    --sk-cselect-fs: var(--sk-board-admin-fs);
+    width: var(--sk-board-admin-select-width);
+    max-width: 100%;
+    margin: 0;
+}
+
 /* 버튼
    기능: 이동·복사 버튼을 글 보기 작은 버튼과 같은 크기로
    이유: 크기 클래스(sizeS)가 붙어 있어도 이 영역에서는 더 작게 쓴다 (사용 위치 예외). 우선순위 (1,3,0) > 버튼 크기 (1,2,0) */

@@ -21,8 +21,8 @@
 | | `pages/member.css` + `adapters/address-form.js`, `agreement-title.js` | `member/join.html`, `modify.html`, `agreement.html` |
 | | `pages/myshop.css` + `adapters/address-book.js` | `myshop/addr/list.html` |
 | | `pages/product.css` (기본정보 표 → "항목명 \| 값" 줄 목록) | `product/detail.html` |
-| **선택 기능** | `features/custom-select.css` + `.js` (ul/li 커스텀 select) | 레이아웃 `<head>` |
-| | `features/inner.css` (`.inner` 컨테이너) | 레이아웃 `<head>` — **쇼핑몰이 `.inner`를 직접 정의하면 쓰지 않는다** |
+| **공통 · custom-select** | `components/custom-select.css` + `.js` (원본 select → ul/li, 프록시). **필수**. 상품 옵션·주문서·목록형 select·`data-sk-native`는 원본 그대로 둔다 | `head.html` (모든 페이지) |
+| **선택 기능** | `features/inner.css` (`.inner` 컨테이너) | 레이아웃 `<head>` — **쇼핑몰이 `.inner`를 직접 정의하면 쓰지 않는다** |
 
 페이지 묶음과 대상 파일은 [`skinkit.config.json`](skinkit.config.json)에서 정합니다.
 
@@ -42,7 +42,7 @@ node skinkit/tools/install.mjs --skin workspace/target-skin/skin4 \
 | 옵션 | 뜻 |
 |---|---|
 | `--pages board,member,myshop,product` / `all` / `none` | 설치할 페이지 묶음 (기본 none) |
-| `--features custom-select,inner` | 선택 기능 |
+| `--features inner` | 선택 기능 |
 | `--theme 경로` | 테마 위치를 바꿀 때만 (기본 `skinkit/theme.css`, 스킨 루트 기준. Git Bash에서는 앞에 `/`를 붙이지 않는다). 기본 위치에 파일이 없으면 `themes/theme.example.css`로 만들고, 있으면 덮어쓰지 않는다 |
 | `--layouts …` | 레이아웃 파일 (기본: `layout.html`, `main.html`, `popup.html` 중 있는 것) |
 | `--dry-run` | 파일을 쓰지 않고 바뀔 내용만 출력 |
@@ -146,7 +146,7 @@ skinkit/
 ├─ adapters/      core.js                                                     ┘
 │                 address-form, agreement-title, address-book                 ← 페이지에서 불러온다
 ├─ pages/         board, member, myshop, product                              ← 페이지에서 불러온다
-├─ features/      custom-select(.css/.js), inner                              ← 선택 기능
+├─ features/      inner                                                       ← 선택 기능
 ├─ themes/        theme.example.css
 ├─ examples/      demo.html (카페24 마크업 흉내 + 자동 검사)
 ├─ tools/         build.mjs (빌드·검사), install.mjs (스킨에 설치)

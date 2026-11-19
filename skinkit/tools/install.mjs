@@ -9,7 +9,7 @@
    실행
      node skinkit/tools/install.mjs --skin <스킨 폴더> [옵션]
        --pages board,member,myshop,product | all | none   페이지 묶음 (기본: none)
-       --features custom-select,inner                     선택 기능 (기본: 없음)
+       --features inner                                   선택 기능 (기본: 없음). custom-select는 공통(head.html)이라 고르지 않는다
        --theme skinkit/theme.css                          테마 파일 (기본: skinkit/theme.css. 스킨 루트 기준. Git Bash에서는 앞에 / 를 붙이지 않는다)
        --layouts layout/basic/layout.html,…              레이아웃 (기본: layout.html, main.html, popup.html 중 있는 것)
        --dry-run                                          파일을 쓰지 않고 바뀔 내용만 출력

@@ -34,7 +34,7 @@ skin/                              ← 카페24 스킨 루트 (예: skin15)
 │  ├─ adapters/core.js             ← adapter 등록·실행 관리                                     ┘
 │  ├─ adapters/                    ← address-form, agreement-title, address-book (페이지에서 불러오면 켜짐) [구현됨]
 │  ├─ pages/                       ← board, member, myshop, product (페이지 파일 상단에서 불러온다) [구현됨]
-│  ├─ features/                    ← custom-select(.css/.js), inner (선택 기능, 불러오면 켜짐) [구현됨]
+│  ├─ features/                    ← inner (선택 기능, 불러오면 켜짐) [구현됨]. custom-select는 components/로 옮김 (공통, 필수)
 │  ├─ themes/                      ← theme.example.css (쇼핑몰이 복사해서 :root 값만 바꾼다)
 │  ├─ examples/demo.html           ← 카페24 마크업 흉내 + 자동 검사
 │  ├─ tools/build.mjs              ← 브레이크포인트 적용, dist 생성(원본과 같은 구조 + head.html), 검사
@@ -264,7 +264,7 @@ if (!header || !fixed_margin) return;
 | `aisoul/assets/css/components/modal` 일부 | `skinkit/cafe24/layer.css` (공통) |
 | `aisoul/assets/css/components/board·member·myshop` 일부 | `skinkit/pages/board.css`, `member.css`, `myshop.css` (카페24 기본 마크업 부분만, 페이지 전용) |
 | `aisoul/assets/css/components/promo·project·products 대부분` | `{mall}/` |
-| `aisoul/assets/js/components/dropdown.js` + `basket.js`(select) | `skinkit/features/custom-select.js` + `.css` (통합, 선택 기능) |
+| `aisoul/assets/js/components/dropdown.js` + `basket.js`(select) | `skinkit/components/custom-select.js` + `.css` (통합, 공통·필수) |
 | `aisoul/assets/js/components/member.js`(우편번호·약관 제목) | `skinkit/adapters/address-form.js`, `agreement-title.js` (회원 페이지) |
 | `aisoul/assets/js/components/myshop.js`(주소록) | `skinkit/adapters/address-book.js` + `skinkit/pages/myshop.css` (주소록 페이지) |
 | `aisoul/assets/js/components/product.js`(표 → dl) | 버린다. `skinkit/pages/product.css`(CSS 블록화, 상품상세 페이지)로 대체 |

@@ -25,13 +25,15 @@
       "components/check.css",
       "components/quantity.css",
       "components/pagination.css",
+      "components/custom-select.css",
 
       "cafe24/layer.css",
       "cafe24/icons.css",
       "cafe24/empty.css"
     ],
     "js": [
-      "adapters/core.js"
+      "adapters/core.js",
+      "components/custom-select.js"
     ]
   },
 
@@ -61,10 +63,6 @@
 
   "$comment_features": "선택 기능. 설치 시 --features로 고르면 레이아웃 <head>에 head.html 다음으로 선언된다",
   "features": {
-    "custom-select": {
-      "css": ["features/custom-select.css"],
-      "js": ["features/custom-select.js"]
-    },
     "inner": {
       "css": ["features/inner.css"],
       "js": []

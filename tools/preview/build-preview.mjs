@@ -186,7 +186,16 @@ function textValue(name, report) {
         const field = name.slice(5);
         const rule = formRules.find((r) => r.re.test(field));
         report.forms++;
-        return rule.html.replace(/\{name\}/g, field);
+        let html = rule.html.replace(/\{name\}/g, field);
+        // 기능: 페이지에서 처음 나온 form 자리에 id="이름"을 붙인다
+        // 이유: 카페24는 입력 요소에 보통 이름과 같은 id를 붙여 출력하고(예: #birth_year), 쇼핑몰 CSS가 그 id로 너비를 정한다.
+        //       id가 없으면 프리뷰에서 그 CSS가 빠져 실제와 다르게 보였다. 같은 이름이 반복되면 id 중복을 막기 위해 첫 번째에만 붙인다.
+        //       이름과 id가 항상 같은지는 [확인 필요]
+        if (/^[A-Za-z][\w-]*$/.test(field) && !report.formIds.has(field)) {
+            report.formIds.add(field);
+            html = html.replace(/^<([a-zA-Z]+)/, `<$1 id="${field}"`);
+        }
+        return html;
     }
     const rule = textRules.find((r) => r.re.test(name));
     if (rule) return rule.value;
@@ -419,7 +428,7 @@ function checkPage(html, name) {
 // ----------------------------------------------------------------
 const results = [];
 for (const page of PAGES) {
-    const report = { layout: '', assets: new Set(), missing: new Set(), notes: [], vars: 0, forms: 0, modules: 0, admin: 0, fallback: new Map() };
+    const report = { layout: '', assets: new Set(), missing: new Set(), notes: [], vars: 0, forms: 0, modules: 0, admin: 0, formIds: new Set(), fallback: new Map() };
     let html = combine(page, report);
     html = convertDirectives(html, report);
     html = fillTemplate(html, report);
