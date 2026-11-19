@@ -150,7 +150,7 @@
     },
     {
       "match": "^option",
-      "html": "<select data-preview-form=\"{name}\"><option>- [필수] 옵션을 선택해 주세요 -</option></select>"
+      "html": "<select option_select_element=\"ec-option-select-finder\" data-preview-form=\"{name}\"><option value=\"*\">- [필수] 옵션을 선택해 주세요 -</option><option value=\"**\">-------------------</option><option value=\"P1\">샘플 옵션 1</option><option value=\"P2\">샘플 옵션 2</option></select>"
     },
     {
       "match": ".*",

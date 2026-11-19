@@ -58,10 +58,11 @@
 :is(#contents, #popup, .ec-base-layer) select:where(:not(:is(.xans-order-form, #mCafe24Order) *)) {
     border-color: var(--sk-select-border);
     border-radius: var(--sk-select-radius);
-    padding-right: calc(var(--sk-input-px) + var(--sk-select-arrow-size) + 8px);
+    /* 이유: select 여백은 입력창과 따로 둔다 (--sk-select-py/px). 오른쪽은 화살표 자리를 더한다 */
+    padding: var(--sk-select-py) calc(var(--sk-select-px) + var(--sk-select-arrow-size) + 8px) var(--sk-select-py) var(--sk-select-px);
     background-image: var(--sk-select-arrow);
     background-repeat: no-repeat;
-    background-position: right var(--sk-input-px) center;
+    background-position: right var(--sk-select-px) center;
     background-size: var(--sk-select-arrow-size);
     -webkit-appearance: none;
     appearance: none;
@@ -144,8 +145,9 @@
         font-size: var(--sk-input-fs-sm);
     }
     :is(#contents, #popup, .ec-base-layer) select:where(:not(:is(.xans-order-form, #mCafe24Order) *)) {
-        padding-right: calc(var(--sk-input-px-sm) + var(--sk-select-arrow-size) + 8px);
-        background-position: right var(--sk-input-px-sm) center;
+        padding-right: calc(var(--sk-select-px-sm) + var(--sk-select-arrow-size) + 8px);
+        padding-left: var(--sk-select-px-sm);
+        background-position: right var(--sk-select-px-sm) center;
     }
     :is(#contents, #popup, .ec-base-layer) textarea:where(:not(:is(.xans-order-form, #mCafe24Order) *)) {
         font-size: var(--sk-input-fs-sm);

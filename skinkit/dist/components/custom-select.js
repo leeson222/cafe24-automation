@@ -4,7 +4,9 @@
    기능: 원본 <select>를 화면에서 숨기고 ul/li 커스텀 select(components/custom-select.css)를 바로 뒤에 만든다.
          원본 select는 그대로 남아 값 전송·카페24 이벤트를 담당한다 (프록시 방식).
    이유: 원본 select는 브라우저마다 목록 모양이 달라 시안대로 꾸밀 수 없다.
-         novadeal dropdown.js(전체 select)와 basket.js(옵션 변경 레이어)에 따로 있던 코드를 합쳤다.
+         novadeal dropdown.js(전체 select), basket.js(옵션 변경 레이어), product.js(상품 상세 옵션)에 따로 있던 코드를 합쳤다.
+         상품 옵션 select(ec-option-select-finder)는 "옵션 모드"로 만든다 (.custom-select--option, 2026-11-19 추가):
+           구분선 제외, select마다 감시(조합형 옵션 다시 채움·disabled), 고른 뒤 전체 옵션 다시 맞춤
 
    novadeal에서 고친 점
      1. 적용 범위: 모든 select → 설정한 대상만. 주문서·결제는 항상 제외
@@ -20,7 +22,8 @@
 
    설정: window.SkinKitConfig.customSelect = {
            target:  '…',   // 적용할 select 선택자 (기본: 본문·팝업·레이어의 select)
-           exclude: ['…']  // 추가로 뺄 선택자 (기본 제외 목록에 더해진다)
+           exclude: ['…'], // 추가로 뺄 선택자 (기본 제외 목록에 더해진다)
+           option:  false   // 상품 옵션 select를 원본 그대로 둘 때 (기본: 옵션 모드로 바꾼다)
          }
          특정 select만 빼려면 <select data-sk-native> 를 붙인다
    ========================================================================== */
@@ -45,6 +48,7 @@
 
     // 기능: 기본으로 빼는 대상 (설정 exclude가 여기에 더해진다)
     // 이유: 상품 옵션 select는 카페24 가격 계산·재고 확인이 연결되어 있다 (절대 규칙 6).
+    //       그중 카페24 옵션 select(ec-option-select-finder)만 아래 옵션 모드로 따로 받는다. 나머지(세트·추가구성 영역 등)는 원본 그대로
     //       multiple/size는 목록형 select라 드롭다운으로 바꾸면 안 된다
     var DEFAULT_EXCLUDE = [
         '[data-sk-native]',
@@ -56,16 +60,35 @@
     ];
     var EXCLUDE = DEFAULT_EXCLUDE.concat(config.exclude || []).join(', ');
 
+    // 기능: 상품 상세 옵션 select (옵션 모드)
+    // 이유: novadeal product.js(747~974행)의 옵션 커스텀을 옮겼다. 위 기본 제외보다 먼저 판단한다.
+    //       카페24 옵션 select(option_select_element="ec-option-select-finder")만 대상이다.
+    //       원본 select는 그대로 두고 값만 바꿔 change를 보내므로 카페24 가격 계산·조합형 연동·재고 확인이 그대로 돈다 (절대 규칙 6).
+    //       끄려면 SkinKitConfig.customSelect.option = false
+    var OPTION_TARGET = '.xans-product-option select[option_select_element="ec-option-select-finder"]';
+    var OPTION_ENABLED = config.option !== false;
+
+    // 기능: 옵션 목록의 구분선 (카페24가 넣는 "**" 값, "-------" 글자)
+    // 이유: 고를 수 없는 줄이라 목록에서 뺀다 (novadeal과 같다)
+    function isDivider(option) {
+        return option.value === '**' || /^-+$/.test(option.text.trim());
+    }
+
     var uid = 0;
-    var instances = [];          // { select, root, button, text, list }
+    var instances = [];          // { select, root, button, text, list, isOption, observer }
     var documentBound = false;
 
     // ----------------------------------------------------------------
     // 대상 판별
     // ----------------------------------------------------------------
+    function isOptionSelect(select) {
+        return OPTION_ENABLED && select.matches(OPTION_TARGET) && !select.matches('[data-sk-native]');
+    }
+
     function isTarget(select) {
         if (select.closest('.xans-order-form, #mCafe24Order')) return false;
         if (select.matches(ALWAYS_EXCLUDE)) return false;
+        if (isOptionSelect(select)) return true;
         if (select.matches(EXCLUDE)) return false;
         return true;
     }
@@ -119,6 +142,33 @@
             });
         }
         resizeObserver.observe(instance.select.parentElement);
+    }
+
+    // ----------------------------------------------------------------
+    // 기능: 옵션 select를 카페24가 바꾸면 화면을 다시 맞춘다 (옵션 모드)
+    // 이유: 조합형 옵션은 첫 옵션을 고르면 카페24가 다음 select의 option을 새로 채우고 disabled를 바꾼다.
+    //       core 감시는 "새로 생긴 select/option"만 보므로 속성 변화(disabled)는 select마다 따로 본다.
+    //       class는 보지 않는다. syncWidth가 select의 숨김 class를 잠깐 바꾸므로 반복 실행이 생긴다
+    // ----------------------------------------------------------------
+    function watchOption(instance) {
+        if (!('MutationObserver' in window)) return;
+        instance.observer = new MutationObserver(function () { syncSelected(instance); });
+        instance.observer.observe(instance.select, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['disabled', 'selected', 'label']
+        });
+    }
+
+    // 기능: 옵션 select 전체를 다시 맞춘다
+    // 이유: 카페24는 옵션을 고르면 선택 상품(#totalProducts)에 추가한 뒤 select 값을 이벤트 없이 처음으로 되돌리기도 한다.
+    //       그 경우 change도 속성 변화도 생기지 않아, 고른 직후와 잠시 뒤(300ms, 카페24 처리 대기) 한 번 더 읽는다.
+    //       novadeal은 100ms 한 번이었다 [확인 필요: 카페24 처리 시간]
+    function resyncOptions() {
+        instances.forEach(function (instance) {
+            if (instance.isOption) syncSelected(instance);
+        });
     }
 
     // ----------------------------------------------------------------
@@ -183,8 +233,12 @@
         select.setAttribute('aria-hidden', 'true');
         select.setAttribute('data-sk-adapted', 'custom-select');
 
-        var instance = { select: select, root: root, button: button, text: text, list: list, signature: '', activeIndex: -1 };
+        var instance = { select: select, root: root, button: button, text: text, list: list, signature: '', activeIndex: -1, isOption: isOptionSelect(select), observer: null };
         instances.push(instance);
+        if (instance.isOption) {
+            root.classList.add('custom-select--option');
+            watchOption(instance);
+        }
 
         syncWidth(instance);
         watchWidth(instance);
@@ -219,6 +273,7 @@
         for (var i = 0; i < select.options.length; i++) {
             var option = select.options[i];
             if (option.hidden) continue;
+            if (instance.isOption && isDivider(option)) continue;
             var item = document.createElement('li');
             item.className = 'custom-select-option';
             item.id = list.id + '-' + i;
@@ -334,6 +389,10 @@
         }
         syncSelected(instance);
         close(instance, true);
+        if (instance.isOption) {
+            resyncOptions();
+            setTimeout(resyncOptions, 300);
+        }
     }
 
     // ----------------------------------------------------------------
@@ -402,6 +461,7 @@
     function cleanup() {
         instances = instances.filter(function (instance) {
             if (instance.select.isConnected) return true;
+            if (instance.observer) instance.observer.disconnect();
             if (instance.root.isConnected) instance.root.remove();
             return false;
         });

@@ -21,7 +21,7 @@
 | 12 | 빈 상태(empty) 스타일 | A | novadeal | 설계 |
 | 13 | 링크 없는 배너매니저 처리 | A | novadeal | 설계 |
 | 14 | 상품 옵션 표 CSS 블록화 | B | novadeal `products.css` | 설계 |
-| 15 | 상품 옵션 프록시 UI | C | novadeal `product.js` | 검토 필요 |
+| 15 | 상품 옵션 프록시 UI (드롭다운) | B | novadeal `product.js` 747~974행 | 구현 (`components/custom-select` 옵션 모드). 버튼(칩)형은 미구현 |
 | 16 | custom-select (일반 select → ul/li) | A (필수, 공통) | novadeal `dropdown.js` + `basket.js` 통합 | 구현 (`components/custom-select`) |
 | 17 | 상품 기본정보 표 재배치 | D | heodakmkt 방식 개선 | 검토 필요 |
 | 18 | 상품 상세정보 더보기 | B | novadeal `prod_detail.js` | 설계 |
@@ -187,7 +187,16 @@
 - **원칙**: 표 마크업과 `module` 속성은 그대로 둔다
 - **B 조건**: 옵션 유형(조합형/독립형/추가구성상품)별 화면 확인
 
-### 15) 상품 옵션 프록시 UI (C)
+### 15) 상품 옵션 프록시 UI (B — 드롭다운 구현됨)
+
+- **구현 (2026-11-19)**: `components/custom-select.js` 옵션 모드. 대상은 `.xans-product-option select[option_select_element="ec-option-select-finder"]`. 마크업은 일반 custom-select와 같고 `.custom-select--option`이 붙는다
+  - 원본 select는 화면에서만 숨기고 값을 바꾼 뒤 네이티브 `change`를 보낸다 → 카페24 가격 계산·조합형 연동이 그대로 돈다
+  - 구분선(`**`, `----`) 제외. select마다 감시(`childList`, `disabled`/`selected`/`label` 속성)해서 카페24가 옵션을 다시 채우거나 품절 처리하면 목록을 다시 그린다
+  - 고른 직후와 300ms 뒤에 모든 옵션 select를 다시 읽는다 (카페24가 이벤트 없이 값을 처음으로 되돌리는 경우)
+  - 끄기: `SkinKitConfig.customSelect.option = false`
+  - novadeal 대비: 표시 글자를 "항상 첫 항목" → 실제 선택값, 감시 속성 한정(반복 실행 방지), 사라진 select의 감시 해제
+  - novadeal `product.js` 1396행 이후의 하단 고정 구매바 옵션 프록시는 아직 옮기지 않았다
+  - **실제 쇼핑몰 검증 필요**: 단독형·조합형(분리)·연동형 옵션, 품절 옵션, 추가 입력 옵션이 있는 상품에서 옵션 선택 → 선택 상품 추가 → 총 금액
 
 - **방식**: 원래 `select`는 숨기고, 버튼 목록을 대신 보여준다. 버튼을 누르면 원래 select 값을 바꾸고 `change`를 발생시킨다
 - **[확인 필요]**

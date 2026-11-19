@@ -47,7 +47,7 @@
     width: 100%;
     height: var(--sk-cselect-height);
     margin: 0;
-    padding: 0 var(--sk-cselect-px);
+    padding: var(--sk-cselect-py) var(--sk-cselect-px);
     border: var(--sk-input-border-width) solid var(--sk-cselect-border);
     border-radius: var(--sk-cselect-radius);
     font: inherit;
@@ -173,6 +173,6 @@
 @media (max-width: 767px /*bp.small*/) {
     .custom-select-default {
         height: var(--sk-cselect-height-sm);
-        padding: 0 var(--sk-input-px-sm);
+        padding: var(--sk-cselect-py) var(--sk-cselect-px-sm);
     }
 }

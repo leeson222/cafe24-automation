@@ -111,7 +111,9 @@
                 <option value="name">상품명</option>
             </select>
             <select id="t-select-native" data-sk-native><option>data-sk-native (변환 안 함)</option></select>
-            <div class="xans-product-option"><select id="t-select-option"><option>상품 옵션 (변환 안 함)</option></select></div>
+            <div class="xans-product-option"><select id="t-select-option"><option>상품 옵션 영역의 다른 select (변환 안 함)</option></select></div>
+            <!-- 카페24 옵션 select 흉내 (옵션 모드). 구분선(**)은 목록에서 빠져야 한다 -->
+            <div class="xans-product-option"><select id="t-select-prdoption" option_select_element="ec-option-select-finder"><option value="*">- [필수] 옵션을 선택해 주세요 -</option><option value="**">-------------------</option><option value="P1">빨강</option><option value="P2" disabled>파랑 (품절)</option></select></div>
         </div>
     </section>
 
@@ -292,6 +294,26 @@
         check('custom-select: data-sk-native 제외', !$('#t-select-native').nextElementSibling || !$('#t-select-native').nextElementSibling.classList.contains('custom-select'), '');
         check('custom-select: 상품 옵션 제외', !$('#t-select-option').nextElementSibling, '');
         check('custom-select: 주문서 제외', !$('#t-order-select').nextElementSibling, '');
+
+        // 옵션 모드 (상품 상세 옵션 select)
+        var opt = $('#t-select-prdoption');
+        var optCustom = opt.nextElementSibling;
+        check('custom-select 옵션: ec-option-select-finder는 옵션 모드로 생성', !!optCustom && optCustom.classList.contains('custom-select--option'), optCustom && optCustom.className);
+        check('custom-select 옵션: 구분선(**) 제외', optCustom && !optCustom.querySelector('[data-value="**"]') && optCustom.querySelectorAll('.custom-select-option').length === 3, optCustom && optCustom.querySelectorAll('.custom-select-option').length + '개');
+        var optChanges = 0;
+        opt.addEventListener('change', function () { optChanges++; });
+        optCustom.querySelector('.custom-select-default').click();
+        optCustom.querySelector('[data-value="P1"]').click();
+        check('custom-select 옵션: 선택 → 원본 값 + change', opt.value === 'P1' && optChanges === 1, opt.value + ', change=' + optChanges);
+        // 카페24가 조합형 옵션을 다시 채우는 경우 (option 교체)
+        opt.innerHTML = '<option value="*">- [필수] 옵션을 선택해 주세요 -</option><option value="S">S</option><option value="M">M</option>';
+        await nextFrame();
+        // 카페24가 품절 처리 (disabled 속성 변화)
+        opt.options[2].disabled = true;
+        await nextFrame();
+        check('custom-select 옵션: option 다시 채움 → 목록 갱신', !!optCustom.querySelector('[data-value="M"]') && !optCustom.querySelector('[data-value="P1"]'), optCustom.querySelectorAll('.custom-select-option').length + '개');
+        check('custom-select 옵션: disabled 변화 → 목록 반영', !!optCustom.querySelector('[data-value="M"].disabled'), '');
+        check('custom-select 옵션: 값이 처음으로 돌아가면 화면도 처음', optCustom.querySelector('.custom-select-text').textContent.indexOf('[필수]') > -1, optCustom.querySelector('.custom-select-text').textContent);
 
         var changes = 0;
         select.addEventListener('change', function () { changes++; });

@@ -154,6 +154,15 @@
     --sk-select-radius: var(--sk-input-radius);
     --sk-select-border: var(--sk-input-border);
 
+    /* select 여백 (원본 select · 커스텀 select 공통)
+       기능: select 안쪽 여백을 입력창(--sk-input-px)과 따로 둔다
+       이유: 2026-11-19 사용자 결정 — select는 12px 14px로 입력창과 다르다.
+             높이는 --sk-input-height(커스텀은 --sk-cselect-height)가 정한다. 위아래 여백이 높이보다 크면
+             글자는 가운데에 그대로 있고 높이는 늘지 않는다 */
+    --sk-select-py: 12px;
+    --sk-select-px: 14px;
+    --sk-select-px-sm: var(--sk-select-px);
+
     /* ------------------------------------------------------------------
        체크박스 · 라디오
        ------------------------------------------------------------------ */
@@ -178,7 +187,9 @@
        ------------------------------------------------------------------ */
     --sk-cselect-height: var(--sk-input-height);
     --sk-cselect-height-sm: var(--sk-input-height-sm);
-    --sk-cselect-px: var(--sk-input-px);
+    --sk-cselect-py: var(--sk-select-py);
+    --sk-cselect-px: var(--sk-select-px);
+    --sk-cselect-px-sm: var(--sk-select-px-sm);
     --sk-cselect-fs: 14px;
     --sk-cselect-radius: var(--sk-input-radius);
     --sk-cselect-border: var(--sk-input-border);

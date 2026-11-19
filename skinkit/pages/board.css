@@ -233,6 +233,8 @@
     --sk-cselect-height: var(--sk-board-admin-select-height);
     --sk-cselect-height-sm: var(--sk-board-admin-select-height);
     --sk-cselect-px: var(--sk-board-admin-select-px);
+    --sk-cselect-px-sm: var(--sk-board-admin-select-px);
+    --sk-cselect-py: 0;               /* 이유: 32px 높이라 select 기본 위아래 여백(12px)이 들어가지 않는다 */
     --sk-cselect-fs: var(--sk-board-admin-fs);
     width: var(--sk-board-admin-select-width);
     max-width: 100%;

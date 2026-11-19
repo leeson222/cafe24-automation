@@ -30,6 +30,11 @@
     --sk-btn-m-min-width: 105px;
     --sk-btn-l-min-width: 105px;
 
+    /* 2. component: select 여백 (원본·커스텀·상품 옵션 공통, 입력창 여백과 따로) ---------- */
+    --sk-select-py: 12px;
+    --sk-select-px: 14px;
+    --sk-select-px-sm: 14px;         /* 767px 이하 */
+
     /* 2. component: 레이어 -------------------------------------------------- */
     --sk-layer-title-fw: 700;
 
