@@ -1,0 +1,22 @@
+# 고객사 스킨 원본 (로컬 비교용, 업로드 금지)
+# 이유: 다른 회사 쇼핑몰 코드와 CLIENT_ID 등 운영 식별자가 들어 있다
+references/
+
+# 실제 쇼핑몰 작업 스킨 (업로드 금지)
+# 이유: 고객사 스킨과 카페24 기본 스킨 사본이다. SkinKit은 skinkit/에서 따로 관리한다
+workspace/target-skin/
+
+# 쇼핑몰별 테마·환경 값이 실수로 섞이지 않도록 막는다
+*.local.*
+.env
+.env.*
+
+# Claude Code 개인 설정
+.claude/settings.local.json
+
+# OS·편집기
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
