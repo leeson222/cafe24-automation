@@ -8,7 +8,7 @@
           파일이 없으면 SkinKit만으로 확인된다 (우선순위 검사 일부가 의미 없어진다)
     adapter 켜기: html의 data-sk-adapters
 -->
-<html lang="ko" data-sk-adapters="address-form agreement-title custom-select address-book">
+<html lang="ko" data-sk-adapters="address-form agreement-title custom-select address-book" data-sk-features="prdinfo-grid">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -213,6 +213,8 @@
         check('class 순서가 반대여도 적용 (sizeS btnNormal)', css('#t-btn-order', 'borderTopLeftRadius') === '8px', css('#t-btn-order', 'borderTopLeftRadius'));
         check('<a class="disabled"> 비활성 배경', css('#t-btn-disabled', 'backgroundColor') === 'rgb(242, 242, 242)', css('#t-btn-disabled', 'backgroundColor'));
         check('sizeS 높이 auto (카페24 32px 고정 해제)', css('#t-btn-normal-s', 'height') !== '32px', css('#t-btn-normal-s', 'height'));
+        // 이유: 유형별 굵기 토큰 기본값 initial(지정 안 함)이면 크기별 굵기로 대체되어야 한다
+        check('유형별 굵기 미지정 → 크기별 굵기(600)', css('#t-btn-normal-s', 'fontWeight') === '600', css('#t-btn-normal-s', 'fontWeight'));
         check('크기 없는 btnNormal도 둥글기 적용', css('#t-btn-nosize', 'borderTopLeftRadius') === '8px', css('#t-btn-nosize', 'borderTopLeftRadius'));
 
         // 입력

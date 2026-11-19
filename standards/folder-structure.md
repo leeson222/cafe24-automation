@@ -203,6 +203,9 @@ if (!header || !fixed_margin) return;
 | `skin2/layout/basic/js/layout.js` | 검색 미사용으로 load 핸들러의 `searchLayer()` 호출 주석 처리 (검색 레이어가 없으면 null 오류) | skin2(단양더덕농산), 2026-11-17 |
 | `skin2/layout/basic/layout.html`, `popup.html` | 장바구니를 insanga 방식으로 교체하면서 노바딜 `basket.js` 호출 삭제 | skin2(단양더덕농산), 2026-11-17 |
 | `skin2/layout/basic/popup.html` | `project.css`·`promo.css`·`sub_main.css`·`project.js` 호출 삭제 | skin2(단양더덕농산), 2026-11-17 |
+| `skin4/layout/basic/layout.html`, `main.html` | onjangteo `reset.css` 앞에 `skinkit.css`·`onjangteo_custom/theme.css`·`skinkit.js` 호출 추가 (`[SKINKIT]` 주석) | skin4(onjangteo), 2026-11-19 |
+| `skin4/layout/basic/popup.html` | `ec-base-layer.css` 뒤에 `skinkit.css`·`theme.css`, `popup.js` 뒤에 `skinkit.js` 호출 추가 | skin4(onjangteo), 2026-11-19 |
+| `skin4/onjangteo_custom/css/comm.css` | `.btnSubmit` 배경·hover `!important`에 `:not(.disabled)` 추가, 라디오 선택 이미지 규칙을 SkinKit 토큰으로 대체 (원본은 `[SKINKIT]` 주석에 보관) | skin4(onjangteo), 2026-11-19 — 쇼핑몰 CSS라 카페24 기본 파일은 아니지만 함께 기록 |
 
 > [제안] `#header`를 참조하는 카페24 함수가 깨지지 않게 하는 다른 방법(예: 빈 `#header` 요소 유지)도 검토해서 패치를 없앨 수 있는지 확인한다.
 

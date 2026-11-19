@@ -55,6 +55,8 @@
    이유: 브라우저마다 화살표 모양이 달라 시안과 맞지 않는다.
          커스텀 select adapter를 켜면 원본 select는 숨겨지므로 이 규칙은 보이지 않는다 */
 :is(#contents, #popup, .ec-base-layer) select:where(:not(:is(.xans-order-form, #mCafe24Order) *)) {
+    border-color: var(--sk-select-border);
+    border-radius: var(--sk-select-radius);
     padding-right: calc(var(--sk-input-px) + var(--sk-select-arrow-size) + 8px);
     background-image: var(--sk-select-arrow);
     background-repeat: no-repeat;

@@ -64,6 +64,18 @@ window.SkinKitConfig = {
 
 특정 select 하나만 빼려면 `<select data-sk-native>`를 붙입니다.
 
+### 4) 레이아웃을 바꾸는 CSS 켜기 (선택)
+
+화면 배치를 바꾸는 CSS는 기본으로 꺼져 있습니다. 이미 디자인된 스킨에 SkinKit을 넣었을 때 갑자기 바뀌지 않게 하기 위해서입니다.
+
+```html
+<html lang="ko" data-sk-features="prdinfo-grid">
+```
+
+| 이름 | 하는 일 |
+|---|---|
+| `prdinfo-grid` | 상품 상세 기본정보 표를 "항목명 \| 값" 줄 목록으로 바꾼다 (JS 없이 CSS만, 관리자에서 숨긴 행은 그대로 숨김) |
+
 ---
 
 ## 2. 쇼핑몰 테마 만들기
@@ -86,10 +98,21 @@ window.SkinKitConfig = {
 
 ```
 유형  btnNormal(Fix) · btnSubmit(Fix) · btnEm · btnBasic   → --sk-btn-{normal|submit|em|basic}-{bg|color|border|hover-bg}
-크기  sizeS · sizeM · sizeL · sizeQty                     → --sk-btn-{s|m|l|qty}-{py|px|fs|fw|min-width}
+      유형별 둥글기 · 굵기(선택)                             → --sk-btn-{normal|submit}-{radius|fw}
+크기  sizeS · sizeM · sizeL · sizeQty                     → --sk-btn-{s|m|l|qty}-{py|px|fs|fw|min-width|min-height}
 Fix   최소 너비만 고정                                      → --sk-btn-fix-{s|m|l}-min-width
 상태  :disabled 와 카페24 .disabled 공통                     → --sk-btn-disabled-{bg|color|border}
 ```
+
+- 굵기는 크기 토큰이 기본입니다. `--sk-btn-submit-fw: 700`처럼 유형 토큰에 값을 넣으면 그 유형만 크기와 상관없이 그 굵기가 됩니다 (기본값 `initial` = 지정 안 함).
+- 높이가 정해진 시안(40px 등)은 `-min-height`를 쓰고 `-py`를 0으로 둡니다. 글자는 가운데 정렬됩니다.
+
+### 이미 디자인된 스킨에 넣을 때
+
+1. 넣기 전 화면의 계산된 스타일을 측정해서 테마 값으로 옮긴다 (skin4 예: `workspace/target-skin/skin4/onjangteo_custom/theme.css`)
+2. 쇼핑몰 CSS의 `!important`는 SkinKit보다 강하다. 그대로 두면 기존 모양이 유지된다
+3. 쇼핑몰 CSS가 `!important`로 상태(비활성 등)까지 덮는 곳은 쇼핑몰 CSS 쪽을 고친다 (`[SKINKIT]` 주석으로 원본 보관)
+4. 쇼핑몰 CSS에서 SkinKit 규칙을 덮어야 하면 같은 범위 루트(`:is(#wrap, body)`)를 붙인다. 클래스만으로는 ID 우선순위를 이기지 못한다
 
 ---
 

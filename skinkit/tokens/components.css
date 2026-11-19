@@ -48,6 +48,20 @@
     --sk-btn-basic-border: #D1D1D1;
     --sk-btn-basic-hover-bg: #E5E5E5;
 
+    /* 버튼 · 유형별 둥글기
+       기능: Normal과 Submit의 둥글기를 따로 바꿀 수 있게 한다
+       이유: skin4 적용 중 확인 — btnNormal 10px, btnSubmit 12px처럼 유형마다 다른 쇼핑몰이 있다.
+             기본값은 공통 --sk-btn-radius를 따른다 */
+    --sk-btn-normal-radius: var(--sk-btn-radius);
+    --sk-btn-submit-radius: var(--sk-btn-radius);
+
+    /* 버튼 · 유형별 굵기 (선택)
+       기능: 값을 넣으면 크기별 굵기(--sk-btn-{s|m|l}-fw) 대신 이 값을 쓴다
+       이유: 카페24 원본처럼 "같은 sizeM이어도 Submit만 굵게"인 쇼핑몰이 있다.
+       기본값 initial = "지정 안 함". 이때는 크기별 굵기를 쓴다 */
+    --sk-btn-normal-fw: initial;
+    --sk-btn-submit-fw: initial;
+
     /* 크기가 없는 Em/Basic은 작은 칩 모양이다 (카페24 기본 2px 8px / 12px) */
     --sk-btn-chip-py: 2px;
     --sk-btn-chip-px: 8px;
@@ -65,24 +79,28 @@
        기능: sizeS / sizeM / sizeL / sizeQty
        이유: 유형과 크기를 분리해서 btnNormal에도 S/M/L이 모두 적용되게 한다.
              novadeal은 우선순위 문제로 크기별 min-width가 무시되고 항상 105px이었다.
-             같은 모습을 원하면 테마에서 세 값을 모두 105px로 둔다 */
+             같은 모습을 원하면 테마에서 세 값을 모두 105px로 둔다.
+             min-height: 시안이 높이(40px 등)로 정해진 쇼핑몰용. 0이면 여백·줄 높이로 정해진다 */
     --sk-btn-s-py: 9px;
     --sk-btn-s-px: 10px;
     --sk-btn-s-fs: 14px;
     --sk-btn-s-fw: 600;
     --sk-btn-s-min-width: 40px;
+    --sk-btn-s-min-height: 0px;
 
     --sk-btn-m-py: 11px;
     --sk-btn-m-px: 12px;
     --sk-btn-m-fs: 16px;
     --sk-btn-m-fw: 700;
     --sk-btn-m-min-width: 70px;
+    --sk-btn-m-min-height: 0px;
 
     --sk-btn-l-py: 13px;
     --sk-btn-l-px: 20px;
     --sk-btn-l-fs: 18px;
     --sk-btn-l-fw: 600;
     --sk-btn-l-min-width: 100px;
+    --sk-btn-l-min-height: 0px;
 
     --sk-btn-qty-py: 5px;
     --sk-btn-qty-px: 12px;
@@ -130,6 +148,12 @@
     --sk-select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 6l4.5 4.5L12.5 6' fill='none' stroke='%23212121' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     --sk-select-arrow-size: 16px;
 
+    /* 원본 select만 다른 모양
+       기능: 입력창과 select의 테두리·둥글기를 따로 바꿀 수 있게 한다
+       이유: skin4 적용 중 확인 — 입력창은 각진 모서리, select만 둥근 쇼핑몰이 있다. 기본값은 입력창을 따른다 */
+    --sk-select-radius: var(--sk-input-radius);
+    --sk-select-border: var(--sk-input-border);
+
     /* ------------------------------------------------------------------
        체크박스 · 라디오
        ------------------------------------------------------------------ */
@@ -144,6 +168,8 @@
     /* 체크 표시: data URI라 var() 불가. 색을 바꾸려면 stroke를 바꾼 data URI로 덮어쓴다 */
     --sk-check-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2l2.4 2.4 4.6-5' fill='none' stroke='%23fff' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     --sk-check-mark-size: 12px;
+    --sk-radio-size: var(--sk-check-size);   /* 라디오만 크기가 다른 쇼핑몰용 (skin4: 18px) */
+    --sk-radio-checked-color: var(--sk-check-checked-bg);   /* 라디오 링 색이 체크박스와 다른 쇼핑몰용 (skin4: 진회색) */
     --sk-radio-dot-size: 10px;
     --sk-radio-dot-color: var(--sk-white);
 

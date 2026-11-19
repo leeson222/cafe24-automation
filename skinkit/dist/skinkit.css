@@ -219,6 +219,20 @@
     --sk-btn-basic-border: #D1D1D1;
     --sk-btn-basic-hover-bg: #E5E5E5;
 
+    /* 버튼 · 유형별 둥글기
+       기능: Normal과 Submit의 둥글기를 따로 바꿀 수 있게 한다
+       이유: skin4 적용 중 확인 — btnNormal 10px, btnSubmit 12px처럼 유형마다 다른 쇼핑몰이 있다.
+             기본값은 공통 --sk-btn-radius를 따른다 */
+    --sk-btn-normal-radius: var(--sk-btn-radius);
+    --sk-btn-submit-radius: var(--sk-btn-radius);
+
+    /* 버튼 · 유형별 굵기 (선택)
+       기능: 값을 넣으면 크기별 굵기(--sk-btn-{s|m|l}-fw) 대신 이 값을 쓴다
+       이유: 카페24 원본처럼 "같은 sizeM이어도 Submit만 굵게"인 쇼핑몰이 있다.
+       기본값 initial = "지정 안 함". 이때는 크기별 굵기를 쓴다 */
+    --sk-btn-normal-fw: initial;
+    --sk-btn-submit-fw: initial;
+
     /* 크기가 없는 Em/Basic은 작은 칩 모양이다 (카페24 기본 2px 8px / 12px) */
     --sk-btn-chip-py: 2px;
     --sk-btn-chip-px: 8px;
@@ -236,24 +250,28 @@
        기능: sizeS / sizeM / sizeL / sizeQty
        이유: 유형과 크기를 분리해서 btnNormal에도 S/M/L이 모두 적용되게 한다.
              novadeal은 우선순위 문제로 크기별 min-width가 무시되고 항상 105px이었다.
-             같은 모습을 원하면 테마에서 세 값을 모두 105px로 둔다 */
+             같은 모습을 원하면 테마에서 세 값을 모두 105px로 둔다.
+             min-height: 시안이 높이(40px 등)로 정해진 쇼핑몰용. 0이면 여백·줄 높이로 정해진다 */
     --sk-btn-s-py: 9px;
     --sk-btn-s-px: 10px;
     --sk-btn-s-fs: 14px;
     --sk-btn-s-fw: 600;
     --sk-btn-s-min-width: 40px;
+    --sk-btn-s-min-height: 0px;
 
     --sk-btn-m-py: 11px;
     --sk-btn-m-px: 12px;
     --sk-btn-m-fs: 16px;
     --sk-btn-m-fw: 700;
     --sk-btn-m-min-width: 70px;
+    --sk-btn-m-min-height: 0px;
 
     --sk-btn-l-py: 13px;
     --sk-btn-l-px: 20px;
     --sk-btn-l-fs: 18px;
     --sk-btn-l-fw: 600;
     --sk-btn-l-min-width: 100px;
+    --sk-btn-l-min-height: 0px;
 
     --sk-btn-qty-py: 5px;
     --sk-btn-qty-px: 12px;
@@ -301,6 +319,12 @@
     --sk-select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 6l4.5 4.5L12.5 6' fill='none' stroke='%23212121' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     --sk-select-arrow-size: 16px;
 
+    /* 원본 select만 다른 모양
+       기능: 입력창과 select의 테두리·둥글기를 따로 바꿀 수 있게 한다
+       이유: skin4 적용 중 확인 — 입력창은 각진 모서리, select만 둥근 쇼핑몰이 있다. 기본값은 입력창을 따른다 */
+    --sk-select-radius: var(--sk-input-radius);
+    --sk-select-border: var(--sk-input-border);
+
     /* ------------------------------------------------------------------
        체크박스 · 라디오
        ------------------------------------------------------------------ */
@@ -315,6 +339,8 @@
     /* 체크 표시: data URI라 var() 불가. 색을 바꾸려면 stroke를 바꾼 data URI로 덮어쓴다 */
     --sk-check-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2l2.4 2.4 4.6-5' fill='none' stroke='%23fff' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     --sk-check-mark-size: 12px;
+    --sk-radio-size: var(--sk-check-size);   /* 라디오만 크기가 다른 쇼핑몰용 (skin4: 18px) */
+    --sk-radio-checked-color: var(--sk-check-checked-bg);   /* 라디오 링 색이 체크박스와 다른 쇼핑몰용 (skin4: 진회색) */
     --sk-radio-dot-size: 10px;
     --sk-radio-dot-color: var(--sk-white);
 
@@ -822,13 +848,20 @@ body {
    기능: Normal / Submit / Em / Basic 기본색
    이유: Fix는 Normal·Submit과 같은 색을 쓴다 (최소 너비만 다르다)
    ------------------------------------------------------------------------ */
+/* --_sk-btn-type-fw: 유형별 굵기를 크기 규칙에 넘기는 내부 변수 (테마에서 쓰지 않는다)
+   이유: 크기 규칙은 유형을 모른다. 유형 토큰이 initial(지정 안 함)이면 이 변수도 무효가 되어
+         크기 규칙의 var(--_sk-btn-type-fw, 크기별 굵기)가 크기별 굵기로 대체된다 */
 :is(#wrap, body) :is(.btnNormal, .btnNormalFix) {
+    --_sk-btn-type-fw: var(--sk-btn-normal-fw);
     border-color: var(--sk-btn-normal-border);
+    border-radius: var(--sk-btn-normal-radius);
     color: var(--sk-btn-normal-color);
     background-color: var(--sk-btn-normal-bg);
 }
 :is(#wrap, body) :is(.btnSubmit, .btnSubmitFix) {
+    --_sk-btn-type-fw: var(--sk-btn-submit-fw);
     border-color: var(--sk-btn-submit-border);
+    border-radius: var(--sk-btn-submit-radius);
     color: var(--sk-btn-submit-color);
     background-color: var(--sk-btn-submit-bg);
 }
@@ -882,21 +915,24 @@ body {
 }
 :is(#wrap, body) :is(.btnNormal, .btnNormalFix, .btnSubmit, .btnSubmitFix, .btnEm, .btnBasic).sizeS {
     min-width: var(--sk-btn-s-min-width);
+    min-height: var(--sk-btn-s-min-height);
     padding: var(--sk-btn-s-py) var(--sk-btn-s-px);
     font-size: var(--sk-btn-s-fs);
-    font-weight: var(--sk-btn-s-fw);
+    font-weight: var(--_sk-btn-type-fw, var(--sk-btn-s-fw));
 }
 :is(#wrap, body) :is(.btnNormal, .btnNormalFix, .btnSubmit, .btnSubmitFix, .btnEm, .btnBasic).sizeM {
     min-width: var(--sk-btn-m-min-width);
+    min-height: var(--sk-btn-m-min-height);
     padding: var(--sk-btn-m-py) var(--sk-btn-m-px);
     font-size: var(--sk-btn-m-fs);
-    font-weight: var(--sk-btn-m-fw);
+    font-weight: var(--_sk-btn-type-fw, var(--sk-btn-m-fw));
 }
 :is(#wrap, body) :is(.btnNormal, .btnNormalFix, .btnSubmit, .btnSubmitFix, .btnEm, .btnBasic).sizeL {
     min-width: var(--sk-btn-l-min-width);
+    min-height: var(--sk-btn-l-min-height);
     padding: var(--sk-btn-l-py) var(--sk-btn-l-px);
     font-size: var(--sk-btn-l-fs);
-    font-weight: var(--sk-btn-l-fw);
+    font-weight: var(--_sk-btn-type-fw, var(--sk-btn-l-fw));
 }
 
 /* sizeQty
@@ -1042,6 +1078,8 @@ body {
    이유: 브라우저마다 화살표 모양이 달라 시안과 맞지 않는다.
          커스텀 select adapter를 켜면 원본 select는 숨겨지므로 이 규칙은 보이지 않는다 */
 :is(#contents, #popup, .ec-base-layer) select:where(:not(:is(.xans-order-form, #mCafe24Order) *)) {
+    border-color: var(--sk-select-border);
+    border-radius: var(--sk-select-radius);
     padding-right: calc(var(--sk-input-px) + var(--sk-select-arrow-size) + 8px);
     background-image: var(--sk-select-arrow);
     background-repeat: no-repeat;
@@ -1171,6 +1209,8 @@ body {
     border-radius: var(--sk-check-radius);
 }
 :is(#contents, #popup, .ec-base-layer) input[type="radio"]:where(:not(:is(.xans-order-form, #mCafe24Order) *)) {
+    width: var(--sk-radio-size);
+    height: var(--sk-radio-size);
     border-radius: 50%;
 }
 
@@ -1193,12 +1233,12 @@ body {
     background-size: var(--sk-check-mark-size);
 }
 :is(#contents, #popup, .ec-base-layer) input[type="radio"]:where(:not(:is(.xans-order-form, #mCafe24Order) *)):checked {
-    border-color: var(--sk-check-checked-border);
+    border-color: var(--sk-radio-checked-color);
     background-color: var(--sk-radio-dot-color);
     background-image: none;
     /* 기능: 바깥 테두리 안쪽을 주색으로 채우고 가운데 점만 남긴다
        계산: (전체 크기 - 테두리 2px - 점 크기) / 2 = 주색 띠 두께 */
-    box-shadow: inset 0 0 0 calc((var(--sk-check-size) - 2px - var(--sk-radio-dot-size)) / 2) var(--sk-check-checked-bg);
+    box-shadow: inset 0 0 0 calc((var(--sk-radio-size) - 2px - var(--sk-radio-dot-size)) / 2) var(--sk-radio-checked-color);
 }
 
 /* ------------------------------------------------------------------------
@@ -1215,7 +1255,7 @@ body {
 }
 :is(#contents, #popup, .ec-base-layer) input[type="radio"]:where(:not(:is(.xans-order-form, #mCafe24Order) *)):checked:disabled {
     border-color: var(--sk-check-disabled-bg);
-    box-shadow: inset 0 0 0 calc((var(--sk-check-size) - 2px - var(--sk-radio-dot-size)) / 2) var(--sk-check-disabled-bg);
+    box-shadow: inset 0 0 0 calc((var(--sk-radio-size) - 2px - var(--sk-radio-dot-size)) / 2) var(--sk-check-disabled-bg);
 }
 
 /* 키보드 포커스 */
@@ -1770,32 +1810,35 @@ body:not(#popup) .ec-base-layer:not(.typeSide) {
      3) 가격 요소(#span_product_price_text 등)를 미리 잡아 둔 카페24 스크립트가 옛 노드를 갱신한다
      table/tr/th/td에 display:block|grid를 주면 같은 모양을 JS 없이 만들 수 있다.
    카페24 의존: 행 숨김은 .displaynone 클래스로 한다. grid는 숨김이 아닌 행에만 준다
+   켜기 (선택): <html data-sk-features="prdinfo-grid">
+     이유: 상세 화면 레이아웃을 바꾸는 디자인 결정이다. 이미 상세 화면을 디자인한 스킨(skin4 등)이
+           SkinKit을 넣자마자 바뀌지 않도록 기본은 꺼 둔다. :where()라 우선순위는 늘지 않는다
    ========================================================================== */
 
 /* 표 구조 풀기
    기능: 표를 블록으로 바꿔 행 단위로 배치한다
    이유: table 레이아웃은 칸 너비·간격을 원하는 대로 조절하기 어렵다 */
-:is(#wrap, body) .xans-product-detaildesign :is(table, tbody) {
+:where(html[data-sk-features~="prdinfo-grid"]) :is(#wrap, body) .xans-product-detaildesign :is(table, tbody) {
     display: block;
     width: 100%;
     border: 0;
 }
 /* 기능: 표 제목(caption)과 열 너비(colgroup)를 화면에서 뺀다
    이유: caption은 카페24 기본에서도 숨김이다. colgroup은 블록 배치에서 의미가 없다 */
-:is(#wrap, body) .xans-product-detaildesign :is(colgroup, caption) {
+:where(html[data-sk-features~="prdinfo-grid"]) :is(#wrap, body) .xans-product-detaildesign :is(colgroup, caption) {
     display: none;
 }
 
 /* 한 행 = "항목명 | 값"
    기능: 2칸 grid
    이유: :not(.displaynone)로 카페24가 숨긴 행은 그대로 숨긴다 */
-:is(#wrap, body) .xans-product-detaildesign tr:not(.displaynone) {
+:where(html[data-sk-features~="prdinfo-grid"]) :is(#wrap, body) .xans-product-detaildesign tr:not(.displaynone) {
     display: grid;
     grid-template-columns: var(--sk-prdinfo-label-width) minmax(0, 1fr);
     column-gap: var(--sk-prdinfo-gap-x);
     align-items: start;
 }
-:is(#wrap, body) .xans-product-detaildesign tr:not(.displaynone) + tr:not(.displaynone) {
+:where(html[data-sk-features~="prdinfo-grid"]) :is(#wrap, body) .xans-product-detaildesign tr:not(.displaynone) + tr:not(.displaynone) {
     margin-top: var(--sk-prdinfo-row-gap);
 }
 
@@ -1803,19 +1846,19 @@ body:not(#popup) .ec-base-layer:not(.typeSide) {
    기능: 기본 글자 크기·색
    주의: 관리자 "상품 정보 표시 설정"에서 지정한 글자 색·크기는 <span style="...">로 출력된다.
          관리자 설정을 존중하기 위해 안쪽 span은 덮어쓰지 않는다 [확인 필요] 실제 출력 */
-:is(#wrap, body) .xans-product-detaildesign :is(th, td) {
+:where(html[data-sk-features~="prdinfo-grid"]) :is(#wrap, body) .xans-product-detaildesign :is(th, td) {
     display: block;
     padding: 0;
     border: 0;
     text-align: left;
     vertical-align: top;
 }
-:is(#wrap, body) .xans-product-detaildesign th {
+:where(html[data-sk-features~="prdinfo-grid"]) :is(#wrap, body) .xans-product-detaildesign th {
     font-size: var(--sk-prdinfo-label-fs);
     font-weight: 400;
     color: var(--sk-prdinfo-label-color);
 }
-:is(#wrap, body) .xans-product-detaildesign td {
+:where(html[data-sk-features~="prdinfo-grid"]) :is(#wrap, body) .xans-product-detaildesign td {
     min-width: 0;
     font-size: var(--sk-prdinfo-value-fs);
     color: var(--sk-prdinfo-value-color);

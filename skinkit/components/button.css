@@ -42,13 +42,20 @@
    기능: Normal / Submit / Em / Basic 기본색
    이유: Fix는 Normal·Submit과 같은 색을 쓴다 (최소 너비만 다르다)
    ------------------------------------------------------------------------ */
+/* --_sk-btn-type-fw: 유형별 굵기를 크기 규칙에 넘기는 내부 변수 (테마에서 쓰지 않는다)
+   이유: 크기 규칙은 유형을 모른다. 유형 토큰이 initial(지정 안 함)이면 이 변수도 무효가 되어
+         크기 규칙의 var(--_sk-btn-type-fw, 크기별 굵기)가 크기별 굵기로 대체된다 */
 :is(#wrap, body) :is(.btnNormal, .btnNormalFix) {
+    --_sk-btn-type-fw: var(--sk-btn-normal-fw);
     border-color: var(--sk-btn-normal-border);
+    border-radius: var(--sk-btn-normal-radius);
     color: var(--sk-btn-normal-color);
     background-color: var(--sk-btn-normal-bg);
 }
 :is(#wrap, body) :is(.btnSubmit, .btnSubmitFix) {
+    --_sk-btn-type-fw: var(--sk-btn-submit-fw);
     border-color: var(--sk-btn-submit-border);
+    border-radius: var(--sk-btn-submit-radius);
     color: var(--sk-btn-submit-color);
     background-color: var(--sk-btn-submit-bg);
 }
@@ -102,21 +109,24 @@
 }
 :is(#wrap, body) :is(.btnNormal, .btnNormalFix, .btnSubmit, .btnSubmitFix, .btnEm, .btnBasic).sizeS {
     min-width: var(--sk-btn-s-min-width);
+    min-height: var(--sk-btn-s-min-height);
     padding: var(--sk-btn-s-py) var(--sk-btn-s-px);
     font-size: var(--sk-btn-s-fs);
-    font-weight: var(--sk-btn-s-fw);
+    font-weight: var(--_sk-btn-type-fw, var(--sk-btn-s-fw));
 }
 :is(#wrap, body) :is(.btnNormal, .btnNormalFix, .btnSubmit, .btnSubmitFix, .btnEm, .btnBasic).sizeM {
     min-width: var(--sk-btn-m-min-width);
+    min-height: var(--sk-btn-m-min-height);
     padding: var(--sk-btn-m-py) var(--sk-btn-m-px);
     font-size: var(--sk-btn-m-fs);
-    font-weight: var(--sk-btn-m-fw);
+    font-weight: var(--_sk-btn-type-fw, var(--sk-btn-m-fw));
 }
 :is(#wrap, body) :is(.btnNormal, .btnNormalFix, .btnSubmit, .btnSubmitFix, .btnEm, .btnBasic).sizeL {
     min-width: var(--sk-btn-l-min-width);
+    min-height: var(--sk-btn-l-min-height);
     padding: var(--sk-btn-l-py) var(--sk-btn-l-px);
     font-size: var(--sk-btn-l-fs);
-    font-weight: var(--sk-btn-l-fw);
+    font-weight: var(--_sk-btn-type-fw, var(--sk-btn-l-fw));
 }
 
 /* sizeQty
