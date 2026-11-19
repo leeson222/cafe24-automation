@@ -75,6 +75,9 @@ window.SkinKitConfig = {
 | 이름 | 하는 일 |
 |---|---|
 | `prdinfo-grid` | 상품 상세 기본정보 표를 "항목명 \| 값" 줄 목록으로 바꾼다 (JS 없이 CSS만, 관리자에서 숨긴 행은 그대로 숨김) |
+| `inner` | `.inner`를 SkinKit 컨테이너(`--sk-max-container` + 좌우 여백)로 정의한다. **쇼핑몰이 `.inner`를 직접 정의하면 켜지 않는다** (속성이 섞여 폭이 바뀐다) |
+
+여러 개는 띄어 씁니다: `data-sk-features="prdinfo-grid inner"`
 
 ---
 
@@ -90,7 +93,7 @@ window.SkinKitConfig = {
 
 - 바꿀 수 있는 값 전체 목록: [`tokens/components.css`](tokens/components.css)
 - 작은 화면 값은 `-sm` 토큰이 따로 있습니다 (`--sk-input-height-sm`). 기본값만 바꾸면 작은 화면은 그대로입니다.
-- 기존 novadeal(aisoul) 변수명(`--main-color`, `--gray-1` …)은 [`tokens/legacy-alias.css`](tokens/legacy-alias.css)가 새 토큰에 연결합니다.
+- 기존 novadeal(aisoul) 변수명(`--main-color`, `--gray-1` …)을 새 토큰에 연결하는 [`tokens/legacy-alias.css`](tokens/legacy-alias.css)는 **dist에 넣지 않았습니다.** 쇼핑몰이 같은 이름을 직접 정의하면 덮어쓸 수 있기 때문입니다. 쇼핑몰이 그 이름을 정의하지 않을 때만 테마 파일 맨 아래에 붙여 씁니다.
 
 ### 버튼 토큰 구조
 
@@ -111,8 +114,9 @@ Fix   최소 너비만 고정                                      → --sk-btn-
 
 1. 넣기 전 화면의 계산된 스타일을 측정해서 테마 값으로 옮긴다 (skin4 예: `workspace/target-skin/skin4/onjangteo_custom/theme.css`)
 2. 쇼핑몰 CSS의 `!important`는 SkinKit보다 강하다. 그대로 두면 기존 모양이 유지된다
-3. 쇼핑몰 CSS가 `!important`로 상태(비활성 등)까지 덮는 곳은 쇼핑몰 CSS 쪽을 고친다 (`[SKINKIT]` 주석으로 원본 보관)
-4. 쇼핑몰 CSS에서 SkinKit 규칙을 덮어야 하면 같은 범위 루트(`:is(#wrap, body)`)를 붙인다. 클래스만으로는 ID 우선순위를 이기지 못한다
+3. 쇼핑몰이 직접 정의한 클래스(`.inner` 등)와 SkinKit 옵트인 기능이 겹치면 켜지 않는다. 레이아웃 폭(`--sk-max-container`)도 테마에 맞춰 둔다
+4. 쇼핑몰 CSS가 `!important`로 상태(비활성 등)까지 덮는 곳은 쇼핑몰 CSS 쪽을 고친다 (`[SKINKIT]` 주석으로 원본 보관)
+5. 쇼핑몰 CSS에서 SkinKit 규칙을 덮어야 하면 같은 범위 루트(`:is(#wrap, body)`)를 붙인다. 클래스만으로는 ID 우선순위를 이기지 못한다
 
 ---
 
@@ -121,7 +125,7 @@ Fix   최소 너비만 고정                                      → --sk-btn-
 ```
 skinkit/
 ├─ tokens/        primitives(원색·숫자) → semantic(역할) → components(컴포넌트 값) → legacy-alias(선택)
-├─ base/          reset, typography(.title-*, .body-*), utility(.flex, .mt-30, .inner …)
+├─ base/          reset, typography(.title-*, .body-*), utility(.flex, .mt-30 …, .inner는 옵트인)
 ├─ components/    button, input, check, select(커스텀), quantity, pagination
 ├─ cafe24/        layer, icons, empty, product-info, board, member, myshop
 ├─ adapters/      core + address-form, agreement-title, custom-select, address-book

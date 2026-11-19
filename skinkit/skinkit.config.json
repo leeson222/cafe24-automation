@@ -10,7 +10,6 @@
     "tokens/primitives.css",
     "tokens/semantic.css",
     "tokens/components.css",
-    "tokens/legacy-alias.css",
 
     "base/reset.css",
     "base/typography.css",

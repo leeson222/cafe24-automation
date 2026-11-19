@@ -3,7 +3,7 @@
    기능: 자주 쓰는 한 줄짜리 클래스
    이유: novadeal utility.css의 클래스 이름을 유지하고, 두 종류로 나눈다.
      1) 고정 utility: 이름이 값을 뜻한다. 모든 쇼핑몰에서 같다 (.flex, .mt-30 = 30px)
-     2) semantic utility: 토큰을 참조한다. 쇼핑몰마다 값이 다르다 (.main-color, .inner)
+     2) semantic utility: 토큰을 참조한다. 쇼핑몰마다 값이 다르다 (.main-color, .inner — .inner는 옵트인)
    제외: .cst-grid2, .sub-page-area 등 novadeal 레이아웃 값은 넣지 않았다
    ========================================================================== */
 
@@ -118,13 +118,16 @@
 }
 
 /* ------------------------------------------------------------------------
-   2) semantic utility · 컨테이너
+   2) semantic utility · 컨테이너  (선택: <html data-sk-features="inner">)
    기능: 콘텐츠 최대 폭을 가운데 정렬
    이유: 폭(--sk-max-container)은 쇼핑몰마다 다르다.
          novadeal은 1200px 이하에서만 좌우 16px 여백을 줬다. 미디어쿼리에는 var()를 못 쓰므로
          여백을 항상 두고 최대 폭에 여백만큼 더한다. 콘텐츠 폭은 그대로 1200px이 된다
+   옵트인인 이유: .inner는 쇼핑몰마다 직접 정의하는 흔한 이름이다. 기본으로 켜 두면 쇼핑몰이 정하지 않은
+         속성이 섞인다. skin4 적용 중 확인 — skin4 .inner { width: 1400px }에 SkinKit max-width(1232px)가
+         남아 헤더·푸터·본문이 1232px로 줄었다. :where()라 켜도 우선순위는 .inner 하나(0,1,0)와 같다
    ------------------------------------------------------------------------ */
-.inner {
+:where(html[data-sk-features~="inner"]) .inner {
     width: 100%;
     max-width: calc(var(--sk-max-container) + var(--sk-container-gutter) * 2);
     margin-right: auto;
