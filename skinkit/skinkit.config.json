@@ -1,0 +1,42 @@
+{
+  "$comment": "SkinKit 빌드 설정. 브레이크포인트와 파일 순서를 여기서만 관리한다. 바꾼 뒤 node skinkit/tools/build.mjs 를 다시 실행한다",
+
+  "breakpoint": {
+    "layout": 1024,
+    "small": 767
+  },
+
+  "css": [
+    "tokens/primitives.css",
+    "tokens/semantic.css",
+    "tokens/components.css",
+    "tokens/legacy-alias.css",
+
+    "base/reset.css",
+    "base/typography.css",
+    "base/utility.css",
+
+    "components/button.css",
+    "components/input.css",
+    "components/check.css",
+    "components/select.css",
+    "components/quantity.css",
+    "components/pagination.css",
+
+    "cafe24/layer.css",
+    "cafe24/icons.css",
+    "cafe24/empty.css",
+    "cafe24/product-info.css",
+    "cafe24/board.css",
+    "cafe24/member.css",
+    "cafe24/myshop.css"
+  ],
+
+  "js": [
+    "adapters/core.js",
+    "adapters/address-form.js",
+    "adapters/agreement-title.js",
+    "adapters/custom-select.js",
+    "adapters/address-book.js"
+  ]
+}

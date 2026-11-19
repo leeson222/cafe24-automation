@@ -1,0 +1,96 @@
+/* ==========================================================================
+   SkinKit · base/reset.css
+   기능: 브라우저 기본 여백·목록 표시·표 간격을 없앤다
+   이유: novadeal의 meyer reset을 바탕으로 하되 두 가지를 바꿨다.
+     1) :where()로 감싸 우선순위를 0으로 만든다.
+        카페24 기본 CSS(class 규칙)와 쇼핑몰 CSS가 언제나 리셋보다 이기게 하기 위해서다.
+     2) strong, b, em 등에 font: inherit를 주지 않는다.
+        카페24 마크업은 가격·제목 강조에 <strong>을 쓰는데, meyer reset은 굵기를 지워 버린다.
+   ========================================================================== */
+
+/* 여백·테두리 제거
+   기능: 블록·인라인 요소의 기본 margin/padding/border를 0으로
+   이유: 브라우저마다 다른 기본 여백 때문에 레이아웃이 달라지는 것을 막는다 */
+:where(html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, img, ins, kbd, q, s, samp,
+small, strike, sub, sup, tt, var, u, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video) {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    vertical-align: baseline;
+}
+
+/* 제목 크기 초기화
+   기능: h1~h6의 브라우저 기본 크기·굵기를 없앤다
+   이유: 카페24 모듈 제목(h2, h3)이 화면마다 다른 크기로 나오지 않게 한다. 크기는 각 컴포넌트가 정한다 */
+:where(h1, h2, h3, h4, h5, h6) {
+    font-size: 100%;
+    font-weight: inherit;
+}
+
+/* HTML5 요소 블록 처리
+   기능: 오래된 브라우저에서도 section 등을 블록으로 표시 */
+:where(article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section) {
+    display: block;
+}
+
+/* 목록·인용·표
+   기능: 목록 기호 제거, 인용 부호 제거, 표 테두리 겹침
+   이유: 카페24 메뉴·상품목록은 ul/li로 그려지므로 기호가 없어야 한다 */
+:where(ol, ul) {
+    list-style: none;
+}
+:where(blockquote, q) {
+    quotes: none;
+}
+:where(blockquote, q)::before,
+:where(blockquote, q)::after {
+    content: none;
+}
+:where(table) {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/* 링크
+   기능: 링크 기본 색·밑줄 제거
+   이유: novadeal은 a { color:#000; font-size:16px }였다. 크기를 고정하면 주변 글자와 어긋나서
+         색은 부모를 따르고 크기는 건드리지 않는다 */
+:where(a) {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* 폼 요소 글꼴
+   기능: 입력·버튼이 본문 글꼴을 따르게 한다
+   이유: 브라우저는 폼 요소에 시스템 글꼴을 따로 쓴다 */
+:where(button, input, select, textarea) {
+    font: inherit;
+    color: inherit;
+}
+:where(button) {
+    cursor: pointer;
+}
+
+/* 본문 기본값
+   기능: 글꼴·글자색·줄 높이·한글 줄바꿈
+   이유: novadeal은 * { font-family } 와 * { word-break } 전체 선택자를 썼다.
+         body에 한 번 주고 상속받게 한다 (ui-conventions 6-6) */
+body {
+    font-family: var(--sk-font-base);
+    color: var(--sk-color-text);
+    line-height: var(--sk-line-height);
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    -webkit-text-size-adjust: 100%;
+}

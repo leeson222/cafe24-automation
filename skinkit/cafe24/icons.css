@@ -1,0 +1,39 @@
+/* ==========================================================================
+   SkinKit · cafe24/icons.css
+   기능: 카페24가 가상 요소(선)로 그리는 아이콘의 색을 토큰으로 바꾼다
+         닫기 X(.btnClose), 상품 삭제 X(.btnDelete), 화살표(.icon.icoArrow*, .ec-base-fold)
+   이유: novadeal은 이 아이콘들을 쇼핑몰 CDN 이미지(etlandmall/…)로 덮었다.
+         다른 쇼핑몰에서는 그 이미지를 쓸 수 없으므로 원래 선 아이콘을 살리고 색만 바꾼다.
+         모양을 완전히 바꿔야 하는 쇼핑몰은 쇼핑몰 CSS에서 따로 덮는다
+   ========================================================================== */
+
+/* 닫기 X
+   기능: 레이어·툴팁 닫기 버튼의 두 선 색
+   카페24 의존: .ec-base-layer .btnClose:before/:after (ec-base-layer.css), .ec-base-tooltip .btnClose (ec-base-tooltip.css) */
+:is(#wrap, body) :is(.ec-base-layer, .ec-base-tooltip) .btnClose::before,
+:is(#wrap, body) :is(.ec-base-layer, .ec-base-tooltip) .btnClose::after {
+    background: var(--sk-icon-close-color);
+}
+
+/* 상품 삭제 X
+   기능: 장바구니·관심상품 목록의 삭제 버튼 선 색
+   카페24 의존: .ec-base-prdInfo .btnDelete:before/:after (ec-base-prdInfo.css) */
+:is(#wrap, body) .ec-base-prdInfo .btnDelete::before,
+:is(#wrap, body) .ec-base-prdInfo .btnDelete::after {
+    background: var(--sk-icon-delete-color);
+}
+
+/* 화살표
+   기능: .icon.icoArrowTop/Bottom/Left/Right 선 색
+   이유: 카페24가 흰 배경용으로 쓰는 .white 화살표는 그대로 둔다
+   카페24 의존: .icon[class*="icoArrow"] (ec-base-ui.css) */
+:is(#wrap, body) .icon[class*="icoArrow"]:not(.white) {
+    border-color: var(--sk-icon-arrow-color);
+}
+
+/* 접기 화살표
+   기능: .ec-base-fold.theme1 제목 오른쪽 화살표 선 색
+   카페24 의존: .ec-base-fold.theme1 > .title:after (ec-base-fold.css) */
+:is(#wrap, body) .ec-base-fold.theme1 > .title::after {
+    border-color: var(--sk-icon-arrow-color);
+}

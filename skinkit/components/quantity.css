@@ -1,0 +1,92 @@
+/* ==========================================================================
+   SkinKit · components/quantity.css
+   기능: 카페24 수량 조절 (.ec-base-qty) — [−] [입력칸] [+]
+   이유: 카페24 원본은 −/+를 position:absolute로 양 끝에 붙이고, 아이콘을 가상 요소 선으로 그린다.
+         novadeal은 아이콘을 쇼핑몰 CDN 이미지로 바꿨다. SkinKit은 원본 가상 요소를 살려 색만 토큰으로 바꾼다.
+   카페24 의존: a.down / a.up (또는 .qtyDown / .qtyUp 래퍼), 그 안의 투명 <img>(클릭 영역)를 그대로 둔다
+   ========================================================================== */
+
+/* 전체 틀
+   기능: 가로 한 줄로 배치하고 테두리를 바깥에 한 번만 그린다
+   우선순위: :is(#wrap, body) 접두사로 카페24 화면별 규칙(sub_style.css 등)보다 강하게 한다 */
+:is(#wrap, body) .ec-base-qty {
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    box-sizing: border-box;
+    width: auto;
+    padding: 0;
+    border: 1px solid var(--sk-qty-border);
+    border-radius: var(--sk-qty-radius);
+    background-color: var(--sk-qty-bg);
+    vertical-align: middle;
+}
+
+/* 순서 고정
+   기능: 마크업 순서가 달라도 [−] [입력] [+]로 보이게 한다
+   이유: 화면마다 카페24 마크업이 down-input-up 또는 input-up-down으로 다르다 */
+:is(#wrap, body) .ec-base-qty :is(.down, .qtyDown) { order: 0; }
+:is(#wrap, body) .ec-base-qty input { order: 1; }
+:is(#wrap, body) .ec-base-qty :is(.up, .qtyUp) { order: 2; }
+
+/* −/+ 버튼
+   기능: 절대 위치를 풀고 flex 항목으로 만든다. 테두리는 바깥 틀이 그린다 */
+:is(#wrap, body) .ec-base-qty :is(.qtyUp, .qtyDown) {
+    position: static;
+    display: flex;
+}
+:is(#wrap, body) .ec-base-qty a:is(.up, .down) {
+    position: relative;
+    top: auto;
+    right: auto;
+    left: auto;
+    flex: none;
+    width: var(--sk-qty-btn-size);
+    height: var(--sk-qty-btn-size);
+    border: 0;
+}
+
+/* 아이콘
+   기능: − 는 가로선(:before), + 는 가로선 + 세로선(:after)
+   이유: 카페24 원본 가상 요소를 가운데 정렬로 다시 잡고 색·길이만 토큰으로 바꾼다 */
+:is(#wrap, body) .ec-base-qty a:is(.up, .down)::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--sk-qty-icon-size);
+    height: 1px;
+    margin: 0;
+    background: var(--sk-qty-icon-color);
+    transform: translate(-50%, -50%);
+}
+:is(#wrap, body) .ec-base-qty a.up::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1px;
+    height: var(--sk-qty-icon-size);
+    margin: 0;
+    background: var(--sk-qty-icon-color);
+    transform: translate(-50%, -50%);
+}
+
+/* 입력칸
+   기능: 테두리 없이 가운데 숫자만 보이게 */
+:is(#wrap, body) .ec-base-qty input[type="text"] {
+    box-sizing: border-box;
+    width: var(--sk-qty-input-width);
+    height: var(--sk-qty-btn-size);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: var(--sk-qty-fs);
+    line-height: var(--sk-qty-btn-size);
+    text-align: center;
+    color: var(--sk-color-text);
+    background: transparent;
+}
+:is(#wrap, body) .ec-base-qty input[type="text"]:is(:hover, :focus) {
+    border: 0;
+}

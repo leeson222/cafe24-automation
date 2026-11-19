@@ -1,0 +1,30 @@
+/* ==========================================================================
+   SkinKit · tokens/legacy-alias.css  (선택)
+   기능: novadeal(aisoul) 시절 변수 이름을 새 토큰에 연결한다
+   이유: 기존 쇼핑몰 CSS가 var(--main-color) 등을 그대로 쓰고 있어도 깨지지 않게 한다.
+         새 쇼핑몰에서는 필요 없다. skinkit.config.json의 css 목록에서 빼면 된다.
+   주의: 새 코드에서는 이 이름을 쓰지 않는다. --sk-* 토큰을 쓴다
+   ========================================================================== */
+
+:root {
+    --main-color: var(--sk-color-primary);
+    --sub-color: var(--sk-color-primary-hover);
+    --black: var(--sk-color-text);
+    --red: var(--sk-color-danger);
+    --blue: var(--sk-color-success);
+
+    --gray-1: var(--sk-gray-1);
+    --gray-2: var(--sk-gray-2);
+    --gray-3: var(--sk-gray-3);
+    --gray-4: var(--sk-gray-4);
+    --gray-5: var(--sk-gray-5);
+    --gray-6: var(--sk-gray-6);
+    --gray-7: var(--sk-gray-7);
+    --gray-8: var(--sk-gray-8);
+    --gray-9: var(--sk-gray-9);
+
+    --max-container: var(--sk-max-container);
+    --header-height: var(--sk-header-h);
+    --footer-height: var(--sk-footer-h);
+    --sub-header-height: var(--sk-sub-header-h);
+}

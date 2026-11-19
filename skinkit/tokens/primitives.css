@@ -1,0 +1,55 @@
+/* ==========================================================================
+   SkinKit · tokens/primitives.css
+   기능: 원색과 기본 숫자 (회색 단계, 둥글기, 간격, 글꼴 목록, 시간)
+   이유: semantic·component 토큰이 참조하는 재료다. 컴포넌트 CSS는 이 파일을
+         직접 참조하지 않고 semantic/component 토큰을 거친다.
+         쇼핑몰 테마에서 이 값을 바꾸는 일은 드물다 (보통 semantic을 바꾼다)
+   ========================================================================== */
+
+:root {
+    /* 무채색
+       기능: 흰색·검은색·회색 9단계
+       이유: novadeal --gray-1~9 값을 그대로 옮겨 기존 화면과 같은 회색을 쓴다 */
+    --sk-white: #FFFFFF;
+    --sk-black: #000000;
+    --sk-gray-0: #F9F9F9;   /* novadeal에서 #f9f9f9로 하드코딩되던 옅은 배경 */
+    --sk-gray-1: #F2F2F2;
+    --sk-gray-2: #E6E6E6;
+    --sk-gray-3: #CCCCCC;
+    --sk-gray-4: #B3B3B3;
+    --sk-gray-5: #999999;
+    --sk-gray-6: #808080;
+    --sk-gray-7: #666666;
+    --sk-gray-8: #4D4D4D;
+    --sk-gray-9: #333333;
+    --sk-gray-10: #212121;  /* novadeal --black (본문 글자색) */
+
+    /* 상태색 원색
+       기능: 오류(빨강)·완료(파랑)
+       이유: 입력 오류·완료 표시에 쓴다. 역할 이름은 semantic에서 붙인다 */
+    --sk-red-500: #FD3153;
+    --sk-blue-500: #0083FF;
+
+    /* 둥글기
+       기능: border-radius 단계
+       이유: novadeal에 4/6/8/10/12px이 흩어져 있어 단계로 묶는다 */
+    --sk-radius-0: 0;
+    --sk-radius-xs: 4px;
+    --sk-radius-s: 6px;
+    --sk-radius-m: 8px;
+    --sk-radius-l: 10px;
+    --sk-radius-xl: 12px;
+    --sk-radius-full: 999px;
+
+    /* 글꼴 목록
+       기능: 웹폰트가 없을 때 쓰는 시스템 글꼴
+       이유: 웹폰트는 쇼핑몰마다 다르다. 테마에서 --sk-font-base 앞에 웹폰트 이름을 붙인다 */
+    --sk-font-system: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic",
+        "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+    /* 시간
+       기능: hover·열림 전환 시간
+       이유: novadeal은 .3s를 곳곳에 직접 썼다 */
+    --sk-duration: .3s;
+    --sk-duration-fast: .15s;
+}

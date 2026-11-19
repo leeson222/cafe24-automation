@@ -21,7 +21,16 @@
 
 ## 2. 디자인 토큰 [제안]
 
-`skinkit/assets/css/base/variables.css`에 모은다. novadeal `variables.css`를 바탕으로 정리했다.
+`skinkit/tokens/`에 3단으로 모은다 (구현됨, 아래는 처음 제안한 형태). novadeal `variables.css`를 바탕으로 정리했다.
+
+| 파일 | 내용 | 쇼핑몰이 바꾸는가 |
+|---|---|---|
+| `primitives.css` | 회색 단계, 둥글기, 글꼴 목록, 시간 | 거의 안 바꾼다 |
+| `semantic.css` | 주색, 글자색, 테두리, 배경, 상태, 글꼴, z-index, 브레이크포인트(JS용) | **주로 여기** |
+| `components.css` | 버튼 유형·크기·상태, 입력, 체크, select, 수량, 페이지, 레이어, 게시판 … | 필요한 것만 |
+| `legacy-alias.css` | `--main-color` 등 novadeal 이름 → 새 토큰 | 바꾸지 않는다 (선택 포함) |
+
+쇼핑몰 값은 `{mall}/theme.css`에서 `:root`만 덮어쓴다. 전체 목록과 사용법은 `skinkit/README.md`.
 
 ```css
 :root {
@@ -86,18 +95,18 @@ CSS 미디어쿼리 안에서는 `var()`를 쓸 수 없고, 카페24는 업로�
 
 ```css
 /* 기능: 모바일 레이아웃 전용 스타일
-   이유: 숫자는 직접 쓰지 않는다. 생성 도구가 skinkit.config.json의 layout 값을 넣는다.
-         템플릿에서는 {{bp.layout}} 자리표시자로 쓴다 */
-@media (max-width: 1024px) { /* … */ }
+   이유: 숫자 뒤에 bp 표시 주석을 단다. 빌드(skinkit/tools/build.mjs)가 skinkit.config.json의 값으로 숫자를 바꾼다.
+         원본도 그대로 유효한 CSS라 빌드 없이 열어도 깨지지 않는다 (처음 제안한 {{bp.layout}} 자리표시자는 CSS 문법 오류라 바꿨다) */
+@media (max-width: 1024px /*bp.layout*/) { /* … */ }
 
 /* 기능: PC 레이아웃 전용 스타일
-   이유: max-width 1024와 겹치지 않도록 1px 큰 값에서 시작한다 */
-@media (min-width: 1025px) { /* … */ }
+   이유: max-width 1024와 겹치지 않도록 1px 큰 값에서 시작한다. +1 표시를 달면 빌드가 설정값 + 1을 넣는다 */
+@media (min-width: 1025px /*bp.layout+1*/) { /* … */ }
 ```
 
 > 미결정: 지원 브라우저가 Safari 16.4 이상이면 범위 문법(`width <= 1024px`, `width > 1024px`)을 쓴다. 소수점 폭(1024.5px)에서 어느 쪽에도 해당하지 않는 구간이 생기지 않는다. 결정 전까지는 위 `max-width`/`min-width` 방식을 쓴다.
 
-- **값을 바꿀 때**: `skinkit.config.json`을 바꾸고 다시 생성한다. 이미 만든 스킨은 치환 스크립트로 바꾼다.
+- **값을 바꿀 때**: `skinkit.config.json`을 바꾸고 `node skinkit/tools/build.mjs`를 실행한다. 설정에 없는 bp 이름을 쓰면 빌드가 멈춘다.
 - **감사**: `audit-skin` 단계에서 설정에 없는 브레이크포인트 숫자를 찾아 경고한다.
 
 ## 4. z-index 단계 [제안]

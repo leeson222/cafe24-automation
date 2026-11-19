@@ -1,0 +1,294 @@
+/* ==========================================================================
+   SkinKit · tokens/components.css
+   기능: 컴포넌트별 디자인 값 목록 (버튼, 입력, 체크, select, 수량, 페이지, 레이어, 게시판 …)
+   이유: 테마 작성자가 "무엇을 바꿀 수 있는지" 이 파일 하나만 보면 알 수 있게 한다.
+         기본값은 semantic 토큰을 참조하므로, 따로 바꾸지 않으면 주색·테두리색을 따라간다.
+   규칙
+     - 이름: --sk-{컴포넌트}-{유형?}-{상태?}-{속성}
+     - 작은 화면 값은 -sm 접미사로 따로 둔다. 컴포넌트 CSS가 small 브레이크포인트(설정값 bp.small, 기본 767px) 이하에서 -sm 값을 쓴다.
+       (테마에서 기본값만 바꿔도 작은 화면 값이 덮어써지지 않게 하기 위해서다)
+     - 실제 스킨에서 쓰이지 않는 상태 토큰은 만들지 않는다
+   ========================================================================== */
+
+:root {
+    /* ------------------------------------------------------------------
+       버튼 · 공통
+       기능: 모든 카페24 버튼 유형이 공유하는 모양
+       이유: 유형(색)·크기(여백)와 별개로 둥글기·전환 효과는 쇼핑몰 단위로 통일된다
+       ------------------------------------------------------------------ */
+    --sk-btn-radius: var(--sk-radius-m);
+    --sk-btn-border-width: 1px;
+    --sk-btn-line-height: 1.5;
+    --sk-btn-gap: 4px;                       /* 아이콘 + 글자 간격 */
+    --sk-btn-group-gap: 10px;                /* .btn-col-wrap 안 버튼 간격 */
+
+    /* 버튼 · 유형별 색
+       기능: btnNormal(Fix) / btnSubmit(Fix) / btnEm / btnBasic
+       이유: Fix는 유형이 아니라 최소 너비 수식어라 색 토큰을 Normal/Submit과 같이 쓴다.
+             Em/Basic 기본값은 카페24 원본 색이다 (novadeal에서 손대지 않았다) */
+    --sk-btn-normal-bg: var(--sk-color-surface);
+    --sk-btn-normal-color: var(--sk-color-text);
+    --sk-btn-normal-border: var(--sk-color-border);
+    --sk-btn-normal-hover-bg: var(--sk-color-surface-muted);
+    --sk-btn-normal-hover-border: var(--sk-btn-normal-border);
+
+    --sk-btn-submit-bg: var(--sk-color-primary);
+    --sk-btn-submit-color: var(--sk-color-on-primary);
+    --sk-btn-submit-border: var(--sk-color-primary);
+    --sk-btn-submit-hover-bg: var(--sk-color-primary-hover);
+    --sk-btn-submit-hover-border: var(--sk-color-primary-hover);
+
+    --sk-btn-em-bg: #737373;
+    --sk-btn-em-color: var(--sk-white);
+    --sk-btn-em-border: transparent;
+    --sk-btn-em-hover-bg: #77797D;
+
+    --sk-btn-basic-bg: #F0F0F0;
+    --sk-btn-basic-color: #222222;
+    --sk-btn-basic-border: #D1D1D1;
+    --sk-btn-basic-hover-bg: #E5E5E5;
+
+    /* 크기가 없는 Em/Basic은 작은 칩 모양이다 (카페24 기본 2px 8px / 12px) */
+    --sk-btn-chip-py: 2px;
+    --sk-btn-chip-px: 8px;
+    --sk-btn-chip-fs: 12px;
+    --sk-btn-chip-radius: var(--sk-radius-xs);
+
+    /* 버튼 · 비활성 (모든 유형 공통)
+       기능: :disabled 와 카페24 .disabled 클래스
+       이유: novadeal은 :disabled만 처리해서 <a class="disabled">에 적용되지 않았다 */
+    --sk-btn-disabled-bg: var(--sk-color-surface-muted);
+    --sk-btn-disabled-color: var(--sk-color-text-disabled);
+    --sk-btn-disabled-border: var(--sk-color-surface-muted);
+
+    /* 버튼 · 크기별
+       기능: sizeS / sizeM / sizeL / sizeQty
+       이유: 유형과 크기를 분리해서 btnNormal에도 S/M/L이 모두 적용되게 한다.
+             novadeal은 우선순위 문제로 크기별 min-width가 무시되고 항상 105px이었다.
+             같은 모습을 원하면 테마에서 세 값을 모두 105px로 둔다 */
+    --sk-btn-s-py: 9px;
+    --sk-btn-s-px: 10px;
+    --sk-btn-s-fs: 14px;
+    --sk-btn-s-fw: 600;
+    --sk-btn-s-min-width: 40px;
+
+    --sk-btn-m-py: 11px;
+    --sk-btn-m-px: 12px;
+    --sk-btn-m-fs: 16px;
+    --sk-btn-m-fw: 700;
+    --sk-btn-m-min-width: 70px;
+
+    --sk-btn-l-py: 13px;
+    --sk-btn-l-px: 20px;
+    --sk-btn-l-fs: 18px;
+    --sk-btn-l-fw: 600;
+    --sk-btn-l-min-width: 100px;
+
+    --sk-btn-qty-py: 5px;
+    --sk-btn-qty-px: 12px;
+    --sk-btn-qty-fs: 12px;
+    --sk-btn-qty-fw: 500;
+
+    /* Fix 수식어: 최소 너비만 고정한다 (카페24 기본 96 / 135 / 160px) */
+    --sk-btn-fix-s-min-width: 96px;
+    --sk-btn-fix-m-min-width: 135px;
+    --sk-btn-fix-l-min-width: 160px;
+
+    /* 글자 버튼 (btnText) */
+    --sk-btn-text-color: var(--sk-color-text-sub);
+    --sk-btn-text-fs: 13px;
+
+    /* ------------------------------------------------------------------
+       입력창 (text, password, email, tel, number, search, url, date, select, textarea)
+       ------------------------------------------------------------------ */
+    --sk-input-height: 54px;
+    --sk-input-height-sm: 47px;
+    --sk-input-px: 16px;
+    --sk-input-px-sm: 14px;
+    --sk-input-fs: 16px;
+    --sk-input-fs-sm: 14px;
+    --sk-input-radius: var(--sk-radius-m);
+    --sk-input-border-width: 1px;
+    --sk-input-bg: var(--sk-color-surface);
+    --sk-input-color: var(--sk-color-text);
+    --sk-input-border: var(--sk-color-border);
+    --sk-input-placeholder: var(--sk-color-border);
+    --sk-input-hover-border: var(--sk-color-border-strong);
+    --sk-input-focus-border: var(--sk-color-border-focus);
+    --sk-input-disabled-bg: var(--sk-color-surface-muted);
+    --sk-input-disabled-color: var(--sk-color-border);
+    --sk-input-error-border: var(--sk-color-danger);
+    --sk-input-success-border: var(--sk-color-success);
+
+    --sk-textarea-min-height: 120px;
+    --sk-textarea-p: 14px;
+
+    /* 기본 select 화살표
+       기능: 원본 select(커스텀 select를 켜지 않았을 때)의 화살표
+       이유: data URI 안에는 var()를 쓸 수 없어서 아이콘 전체를 토큰으로 둔다.
+             색을 바꾸려면 stroke 값(%23 = #)을 바꾼 data URI로 덮어쓴다 */
+    --sk-select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 6l4.5 4.5L12.5 6' fill='none' stroke='%23212121' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    --sk-select-arrow-size: 16px;
+
+    /* ------------------------------------------------------------------
+       체크박스 · 라디오
+       ------------------------------------------------------------------ */
+    --sk-check-size: 24px;
+    --sk-check-radius: var(--sk-radius-xs);
+    --sk-check-bg: var(--sk-color-surface);
+    --sk-check-border: var(--sk-color-border);
+    --sk-check-hover-border: var(--sk-color-border-strong);
+    --sk-check-checked-bg: var(--sk-color-primary);
+    --sk-check-checked-border: var(--sk-color-primary);
+    --sk-check-disabled-bg: var(--sk-color-border);
+    /* 체크 표시: data URI라 var() 불가. 색을 바꾸려면 stroke를 바꾼 data URI로 덮어쓴다 */
+    --sk-check-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2l2.4 2.4 4.6-5' fill='none' stroke='%23fff' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    --sk-check-mark-size: 12px;
+    --sk-radio-dot-size: 10px;
+    --sk-radio-dot-color: var(--sk-white);
+
+    /* ------------------------------------------------------------------
+       커스텀 select (adapter: custom-select)
+       ------------------------------------------------------------------ */
+    --sk-cselect-height: var(--sk-input-height);
+    --sk-cselect-height-sm: var(--sk-input-height-sm);
+    --sk-cselect-px: var(--sk-input-px);
+    --sk-cselect-fs: 14px;
+    --sk-cselect-radius: var(--sk-input-radius);
+    --sk-cselect-border: var(--sk-input-border);
+    --sk-cselect-bg: var(--sk-input-bg);
+    --sk-cselect-color: var(--sk-input-color);
+    --sk-cselect-open-border: var(--sk-input-focus-border);
+    --sk-cselect-icon-color: var(--sk-color-icon);
+    --sk-cselect-list-radius: var(--sk-radius-m);
+    --sk-cselect-list-border: var(--sk-color-border);
+    --sk-cselect-list-bg: var(--sk-color-surface);
+    --sk-cselect-list-p: 7px;
+    --sk-cselect-list-gap: 4px;              /* 선택창과 목록 사이 */
+    --sk-cselect-list-max-height: 300px;
+    --sk-cselect-option-py: 5px;
+    --sk-cselect-option-px: 8px;
+    --sk-cselect-option-radius: var(--sk-radius-xs);
+    --sk-cselect-option-color: var(--sk-color-text-muted);
+    --sk-cselect-option-hover-bg: var(--sk-color-surface-subtle);
+    --sk-cselect-option-selected-color: var(--sk-color-text);
+    --sk-cselect-option-selected-fw: 500;
+    --sk-cselect-option-disabled-color: var(--sk-color-text-disabled);
+
+    /* ------------------------------------------------------------------
+       수량 (.ec-base-qty)
+       ------------------------------------------------------------------ */
+    --sk-qty-border: var(--sk-color-border-subtle);
+    --sk-qty-radius: var(--sk-radius-xs);
+    --sk-qty-bg: var(--sk-color-surface);
+    --sk-qty-btn-size: 30px;
+    --sk-qty-input-width: 40px;
+    --sk-qty-fs: 14px;
+    --sk-qty-icon-color: var(--sk-color-icon);
+    --sk-qty-icon-size: 9px;
+
+    /* ------------------------------------------------------------------
+       페이지네이션 (.ec-base-paginate.typeList)
+       ------------------------------------------------------------------ */
+    --sk-page-size: 32px;
+    --sk-page-gap: 8px;
+    --sk-page-radius: var(--sk-radius-xs);
+    --sk-page-fs: 14px;
+    --sk-page-fw: 600;
+    --sk-page-color: var(--sk-color-text);
+    --sk-page-bg: transparent;
+    --sk-page-border: transparent;
+    --sk-page-hover-bg: var(--sk-color-surface-muted);
+    --sk-page-active-bg: var(--sk-color-text);
+    --sk-page-active-color: var(--sk-white);
+    --sk-page-active-border: var(--sk-page-active-bg);
+    --sk-page-arrow-color: var(--sk-color-icon);
+    --sk-page-arrow-size: 7px;
+    --sk-page-margin: 60px 0;
+
+    /* ------------------------------------------------------------------
+       레이어 (.ec-base-layer) · 유형별
+       ------------------------------------------------------------------ */
+    --sk-layer-radius: var(--sk-radius-l);
+    --sk-layer-border: var(--sk-color-border-subtle);
+    --sk-layer-shadow: 0 0 4px rgba(0, 0, 0, .2);
+    --sk-layer-bg: var(--sk-color-surface);
+    --sk-layer-title-fs: 16px;
+    --sk-layer-title-fw: 700;
+
+    /* 알림 레이어 (.gAlert, 장바구니 담기 등) */
+    --sk-layer-alert-max-width: 500px;
+    --sk-layer-alert-msg-fs: 18px;
+    --sk-layer-alert-msg-fw: 700;
+    --sk-layer-alert-btn-gap: 10px;
+
+    /* 장바구니 옵션 변경 레이어 */
+    --sk-layer-modal-max-height: 80dvh;
+    --sk-layer-modal-title-fs: 18px;
+    --sk-layer-modal-title-fs-sm: 14px;
+
+    /* 넓은 레이어 (쿠폰 다운로드 결과) */
+    --sk-layer-wide-width: 700px;
+
+    /* ------------------------------------------------------------------
+       카페24 CSS 아이콘 (cafe24/icons.css)
+       기능: 카페24가 가상 요소로 그리는 X, 화살표의 선 색
+       이유: novadeal은 이 아이콘들을 쇼핑몰 CDN 이미지로 바꿨다. 이미지 없이 색만 바꾼다
+       ------------------------------------------------------------------ */
+    --sk-icon-close-color: var(--sk-color-icon);         /* 레이어·툴팁 닫기 X */
+    --sk-icon-delete-color: var(--sk-color-icon-muted);  /* 장바구니 상품 삭제 X */
+    --sk-icon-arrow-color: var(--sk-color-icon);         /* .icon.icoArrow*, .ec-base-fold 화살표 */
+
+    /* ------------------------------------------------------------------
+       빈 상태 (.ec-base-prdEmpty, td.message)
+       ------------------------------------------------------------------ */
+    --sk-empty-fs: 18px;
+    --sk-empty-fw: 500;
+    --sk-empty-color: var(--sk-color-text);
+    --sk-empty-table-fs: 14px;
+    --sk-empty-table-color: var(--sk-color-text-sub);
+    --sk-empty-img-gap: 20px;
+
+    /* ------------------------------------------------------------------
+       상품 기본정보 표 (.xans-product-detaildesign) — CSS 블록화
+       ------------------------------------------------------------------ */
+    --sk-prdinfo-label-width: 100px;
+    --sk-prdinfo-gap-x: 16px;
+    --sk-prdinfo-row-gap: 8px;
+    --sk-prdinfo-label-color: var(--sk-color-text-sub);
+    --sk-prdinfo-label-fs: 14px;
+    --sk-prdinfo-value-color: var(--sk-color-text);
+    --sk-prdinfo-value-fs: 14px;
+
+    /* ------------------------------------------------------------------
+       게시판
+       ------------------------------------------------------------------ */
+    --sk-board-cell-p: 10px;
+    --sk-board-fs: 14px;
+    --sk-board-color: var(--sk-color-text);
+    --sk-board-th-fw: 500;
+    --sk-board-read-title-fs: 24px;
+    --sk-board-read-meta-color: var(--sk-color-text-muted);
+    --sk-board-read-max-width: 800px;
+    --sk-board-comment-bg: var(--sk-color-surface-subtle);
+    --sk-board-comment-radius: var(--sk-radius-m);
+    --sk-board-comment-item-border: var(--sk-color-border-subtle);
+    --sk-board-small-btn-p: 5px 11px;         /* 글 보기·댓글 안 작은 버튼 */
+    --sk-board-small-btn-fs: 12px;
+
+    /* ------------------------------------------------------------------
+       회원 · 주소 (adapter: address-form, agreement-title, address-book)
+       ------------------------------------------------------------------ */
+    --sk-addr-search-gap: 8px;
+    --sk-agree-required-color: var(--sk-color-primary);
+    --sk-agree-optional-color: var(--sk-color-text-muted);
+    --sk-agree-tag-fs: 14px;
+    --sk-agree-tag-fw: 600;
+
+    --sk-addrbook-card-p: 24px 20px;
+    --sk-addrbook-card-radius: var(--sk-radius-xl);
+    --sk-addrbook-card-border: var(--sk-color-border-subtle);
+    --sk-addrbook-card-gap: 16px;
+    --sk-addrbook-label-width: 80px;
+    --sk-addrbook-label-color: var(--sk-color-text-sub);
+}

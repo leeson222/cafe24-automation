@@ -1,0 +1,318 @@
+<!doctype html>
+<!--
+    SkinKit · examples/demo.html
+    기능: 카페24 마크업을 흉내 낸 확인용 페이지 + 자동 검사
+          브라우저로 열면 화면 맨 위에 검사 결과가 나온다
+    이유: 실제 카페24 쇼핑몰에 올리기 전에 선택자 우선순위·토큰·adapter 동작을 확인한다
+    주의: 카페24 기본 CSS는 로컬 workspace/target-skin/base(업로드 안 함)에서 불러온다.
+          파일이 없으면 SkinKit만으로 확인된다 (우선순위 검사 일부가 의미 없어진다)
+    adapter 켜기: html의 data-sk-adapters
+-->
+<html lang="ko" data-sk-adapters="address-form agreement-title custom-select address-book">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SkinKit Demo</title>
+
+<!-- ① 카페24 기본 CSS (로컬 전용) -->
+<link rel="stylesheet" href="../../workspace/target-skin/base/layout/basic/css/common.css">
+<link rel="stylesheet" href="../../workspace/target-skin/base/layout/basic/css/ec-base-ui.css">
+<link rel="stylesheet" href="../../workspace/target-skin/base/layout/basic/css/ec-base-button.css">
+<link rel="stylesheet" href="../../workspace/target-skin/base/layout/basic/css/ec-base-table.css">
+<link rel="stylesheet" href="../../workspace/target-skin/base/layout/basic/css/ec-base-layer.css">
+<link rel="stylesheet" href="../../workspace/target-skin/base/layout/basic/css/ec-base-paginate.css">
+<link rel="stylesheet" href="../../workspace/target-skin/base/layout/basic/css/ec-base-prdInfo.css">
+
+<!-- ② SkinKit → ③ 쇼핑몰 테마 -->
+<link rel="stylesheet" href="../dist/skinkit.css">
+<!-- <link rel="stylesheet" href="../themes/theme.example.css"> -->
+
+<style>
+    /* 데모 화면 배치용 (SkinKit과 무관) */
+    .demo-section { margin: 40px 0; }
+    .demo-section > h2 { margin-bottom: 12px; font-size: 18px; font-weight: 700; }
+    .demo-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    #sk-test-result { padding: 16px; font: 13px/1.6 monospace; white-space: pre-wrap; background: #f6f6f6; }
+    #sk-test-result.fail { background: #ffecec; }
+    .demo-layer { position: static !important; transform: none !important; width: min(420px, 100%); min-width: 0 !important; }
+</style>
+</head>
+<body>
+<pre id="sk-test-result">검사 실행 중…</pre>
+
+<div id="wrap">
+<div id="container"><div id="contents" class="inner">
+
+    <!-- 버튼 -->
+    <section class="demo-section" id="demo-button">
+        <h2>버튼</h2>
+        <div class="demo-row">
+            <a href="#none" class="btnNormal sizeS" id="t-btn-normal-s">btnNormal sizeS</a>
+            <a href="#none" class="btnNormalFix sizeM" id="t-btn-normalfix-m">btnNormalFix sizeM</a>
+            <a href="#none" class="btnSubmit sizeM" id="t-btn-submit-m">btnSubmit sizeM</a>
+            <a href="#none" class="btnSubmitFix sizeL">btnSubmitFix sizeL</a>
+            <a href="#none" class="sizeS btnNormal" id="t-btn-order">sizeS btnNormal (순서 반대)</a>
+            <a href="#none" class="btnSubmit sizeM disabled" id="t-btn-disabled">disabled 클래스</a>
+            <button type="button" class="btnNormal sizeS" disabled>disabled 속성</button>
+            <a href="#none" class="btnNormal" id="t-btn-nosize">크기 없음</a>
+            <a href="#none" class="btnEm">btnEm 칩</a>
+            <a href="#none" class="btnBasic">btnBasic 칩</a>
+            <a href="#none" class="btnText">btnText</a>
+        </div>
+    </section>
+
+    <!-- 입력 -->
+    <section class="demo-section" id="demo-input">
+        <h2>입력</h2>
+        <div class="demo-row">
+            <input type="text" id="t-input" placeholder="text">
+            <input type="password" placeholder="password">
+            <span><input type="text" id="t-input-error" value="오류"><p class="error">오류 문구</p></span>
+            <input type="text" disabled value="disabled">
+            <label><input type="checkbox" id="t-check" checked> 체크박스</label>
+            <label><input type="radio" name="r" checked> 라디오</label>
+            <label><input type="radio" name="r"> 라디오</label>
+        </div>
+        <textarea placeholder="textarea"></textarea>
+    </section>
+
+    <!-- 커스텀 select -->
+    <section class="demo-section" id="demo-select">
+        <h2>커스텀 select (adapter)</h2>
+        <div class="demo-row">
+            <label for="t-select">정렬</label>
+            <select id="t-select" name="sort" onchange="window.__inlineChange = (window.__inlineChange || 0) + 1">
+                <option value="new">신상품</option>
+                <option value="low">낮은 가격</option>
+                <option value="high" disabled>높은 가격 (비활성)</option>
+                <option value="name">상품명</option>
+            </select>
+            <select id="t-select-native" data-sk-native><option>data-sk-native (변환 안 함)</option></select>
+            <div class="xans-product-option"><select id="t-select-option"><option>상품 옵션 (변환 안 함)</option></select></div>
+        </div>
+    </section>
+
+    <!-- 수량 / 페이지 -->
+    <section class="demo-section">
+        <h2>수량 · 페이지</h2>
+        <span class="ec-base-qty" id="t-qty">
+            <a href="javascript:;" class="down">수량감소</a>
+            <input type="text" value="1">
+            <a href="javascript:;" class="up">수량증가</a>
+        </span>
+        <div class="ec-base-paginate typeList">
+            <a href="#none">이전 페이지</a>
+            <ol><li><a href="#none" class="this" id="t-page-this">1</a></li><li><a href="#none">2</a></li><li><a href="#none">3</a></li></ol>
+            <a href="#none">다음 페이지</a>
+        </div>
+    </section>
+
+    <!-- 상품 기본정보 표 -->
+    <section class="demo-section">
+        <h2>상품 기본정보 (CSS 블록화)</h2>
+        <div class="xans-element- xans-product xans-product-detaildesign">
+            <table border="1">
+                <caption>기본 정보</caption>
+                <tbody>
+                    <tr class="xans-record-" id="t-prd-row"><th scope="row">판매가</th><td>12,000원</td></tr>
+                    <tr class="xans-record- displaynone" id="t-prd-hidden"><th scope="row">숨긴 항목</th><td>관리자에서 숨김</td></tr>
+                    <tr class="xans-record-"><th scope="row">배송비</th><td>3,000원</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 회원가입 -->
+    <section class="demo-section">
+        <h2>회원가입 (adapter: address-form, agreement-title)</h2>
+        <div id="join_zipcode_wrap">
+            <input id="postcode1" name="postcode1" type="text" value="12345">
+            <a href="#none" id="postBtn" class="btnNormal sizeM" onclick="window.__postClick = true">주소검색</a>
+        </div>
+        <div class="agreeArea"><div class="title"><h3><input type="checkbox" id="agree0"><label for="agree0" class="check" id="t-agree-req">이용약관 동의 (필수)</label></h3></div></div>
+        <div class="agreeArea"><div class="title"><h3><input type="checkbox" id="agree1"><label for="agree1" class="check" id="t-agree-opt">마케팅 수신 동의 [선택]</label></h3></div></div>
+    </section>
+
+    <!-- 주소록 -->
+    <section class="demo-section">
+        <h2>배송 주소록 (adapter: address-book) — 창 폭을 1024px 이하로 줄이면 카드</h2>
+        <div class="xans-element- xans-myshop xans-myshop-addrlist">
+            <div class="ec-base-table typeList">
+                <table>
+                    <thead><tr><th><input type="checkbox"></th><th>고정</th><th>배송지명</th><th>수령인</th><th>일반전화</th><th>휴대전화</th><th>주소</th><th>수정</th></tr></thead>
+                    <tbody class="center">
+                        <tr class="xans-record-" id="t-addr-row">
+                            <td><input type="checkbox" name="ma_idx[]" value="7" id="t-addr-check"></td>
+                            <td><a href="#none" class="btnNormal sizeS">고정</a></td>
+                            <td>집</td><td>홍길동</td><td>02-000-0000</td><td>010-0000-0000</td><td>서울시 어딘가</td>
+                            <td><a href="#none" class="btnNormal sizeS">수정</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- 주문서 (제외 확인) -->
+    <section class="demo-section">
+        <h2>주문서 영역 (SkinKit 제외)</h2>
+        <div class="xans-element- xans-order xans-order-form">
+            <input type="text" id="t-order-input" value="주문서 입력칸">
+            <select id="t-order-select"><option>주문서 select</option></select>
+        </div>
+    </section>
+
+    <!-- 레이어 -->
+    <section class="demo-section">
+        <h2>레이어</h2>
+        <div class="ec-base-layer gAlert demo-layer" id="t-layer">
+            <div class="header"><h3>알림</h3></div>
+            <div class="content"><p>장바구니에 담았습니다.</p></div>
+            <div class="ec-base-button"><a href="#none" class="btnNormalFix sizeM">계속 쇼핑</a><a href="#none" class="btnSubmitFix sizeM">장바구니</a></div>
+            <button type="button" class="btnClose">닫기</button>
+        </div>
+    </section>
+
+</div></div>
+</div>
+
+<script src="../dist/skinkit.js"></script>
+<script>
+/* ==========================================================================
+   자동 검사
+   기능: 계산된 스타일과 adapter 결과를 확인해서 맨 위에 표시한다
+   이유: 화면을 눈으로 보지 않아도 우선순위·토큰·adapter가 의도대로인지 알 수 있다
+   ========================================================================== */
+(function () {
+    var results = [];
+    var $ = function (s) { return document.querySelector(s); };
+    var css = function (s, p) { var el = $(s); return el ? getComputedStyle(el)[p] : '(없음)'; };
+    function check(name, ok, detail) { results.push((ok ? 'PASS ' : 'FAIL ') + name + (ok ? '' : '  → ' + detail)); }
+    // 이유: headless 브라우저는 화면을 그리지 않아 requestAnimationFrame이 늦게 올 수 있다. 시간으로 기다린다
+    function nextFrame() { return new Promise(function (r) { setTimeout(r, 120); }); }
+    // 기능: 지금까지의 결과를 맨 위 상자와 문서 제목에 쓴다
+    function report(done) {
+        var failed = results.filter(function (r) { return r.indexOf('FAIL') === 0; }).length;
+        var passed = results.filter(function (r) { return r.indexOf('PASS') === 0; }).length;
+        var box = document.getElementById('sk-test-result');
+        box.textContent = 'SkinKit 검사' + (done ? '' : ' (진행 중)') + ': 통과 ' + passed + ' / 실패 ' + failed + '\n' + results.join('\n');
+        box.className = failed ? 'fail' : '';
+        document.title = 'SkinKit Demo — ' + (failed ? 'FAIL ' + failed : 'PASS ' + passed);
+    }
+
+    async function run() {
+        var hasCafe24 = Array.prototype.some.call(document.styleSheets, function (s) {
+            try { return /ec-base-button/.test(s.href) && s.cssRules.length > 0; } catch (e) { return false; }
+        });
+        results.push('카페24 기본 CSS ' + (hasCafe24 ? '로드됨 (우선순위 검사 유효)' : '없음 (SkinKit만 검사)'));
+
+        // 버튼
+        check('btnSubmit 배경 = --sk-color-primary', css('#t-btn-submit-m', 'backgroundColor') === 'rgb(33, 33, 33)', css('#t-btn-submit-m', 'backgroundColor'));
+        check('sizeS min-width 40px (크기 규칙이 공통 규칙을 이김)', css('#t-btn-normal-s', 'minWidth') === '40px', css('#t-btn-normal-s', 'minWidth'));
+        check('Fix sizeM min-width 135px', css('#t-btn-normalfix-m', 'minWidth') === '135px', css('#t-btn-normalfix-m', 'minWidth'));
+        check('class 순서가 반대여도 적용 (sizeS btnNormal)', css('#t-btn-order', 'borderTopLeftRadius') === '8px', css('#t-btn-order', 'borderTopLeftRadius'));
+        check('<a class="disabled"> 비활성 배경', css('#t-btn-disabled', 'backgroundColor') === 'rgb(242, 242, 242)', css('#t-btn-disabled', 'backgroundColor'));
+        check('sizeS 높이 auto (카페24 32px 고정 해제)', css('#t-btn-normal-s', 'height') !== '32px', css('#t-btn-normal-s', 'height'));
+        check('크기 없는 btnNormal도 둥글기 적용', css('#t-btn-nosize', 'borderTopLeftRadius') === '8px', css('#t-btn-nosize', 'borderTopLeftRadius'));
+
+        // 입력
+        // 이유: 작은 화면(767px 이하)에서는 -sm 토큰(47px)이 적용된다
+        var inputH = window.innerWidth <= 767 ? '47px' : '54px';
+        check('text 입력 높이 ' + inputH + ' (화면 폭 ' + window.innerWidth + 'px)', css('#t-input', 'height') === inputH, css('#t-input', 'height'));
+        check('원본 select 오른쪽 여백 > 좌우 기본 여백 (화살표 자리)', parseFloat(css('#t-select-native', 'paddingRight')) > parseFloat(css('#t-select-native', 'paddingLeft')), css('#t-select-native', 'paddingRight'));
+        check('textarea 높이 >= 120px (54px 고정 해제)', parseFloat(css('textarea', 'height')) >= 120, css('textarea', 'height'));
+        check('.error 앞 입력칸 빨간 테두리', css('#t-input-error', 'borderTopColor') === 'rgb(253, 49, 83)', css('#t-input-error', 'borderTopColor'));
+        check('주문서 입력칸은 제외 (54px 아님)', css('#t-order-input', 'height') !== '54px', css('#t-order-input', 'height'));
+        check('체크박스 24px', css('#t-check', 'width') === '24px', css('#t-check', 'width'));
+        check('체크박스 선택 시 주색 배경', css('#t-check', 'backgroundColor') === 'rgb(33, 33, 33)', css('#t-check', 'backgroundColor'));
+        check('수량 입력칸은 54px 아님', css('#t-qty input', 'height') !== '54px', css('#t-qty input', 'height'));
+
+        // 페이지·레이어·상품정보
+        check('현재 페이지 배경', css('#t-page-this', 'backgroundColor') === 'rgb(33, 33, 33)', css('#t-page-this', 'backgroundColor'));
+        check('레이어 둥글기 10px', css('#t-layer', 'borderTopLeftRadius') === '10px', css('#t-layer', 'borderTopLeftRadius'));
+        check('상품정보 행 grid', css('#t-prd-row', 'display') === 'grid', css('#t-prd-row', 'display'));
+        check('상품정보 숨긴 행(displaynone)은 계속 숨김', css('#t-prd-hidden', 'display') === 'none', css('#t-prd-hidden', 'display'));
+
+        // adapter: address-form
+        var wraps = document.querySelectorAll('#join_zipcode_wrap .addr-search-wrap');
+        check('address-form: 래퍼 1개', wraps.length === 1, wraps.length + '개');
+        SkinKit.adapters.refresh();
+        SkinKit.adapters.refresh();
+        check('address-form: 다시 실행해도 래퍼 1개', document.querySelectorAll('#join_zipcode_wrap .addr-search-wrap').length === 1, '');
+        $('#postBtn').click();
+        check('address-form: 옮긴 버튼의 onclick 유지', window.__postClick === true, '');
+        check('address-form: input name/value 유지', $('#postcode1').name === 'postcode1' && $('#postcode1').value === '12345', '');
+
+        // adapter: agreement-title
+        check('agreement-title: (필수) → em.required', !!$('#t-agree-req em.required') && $('#t-agree-req').textContent.trim() === '필수 이용약관 동의', $('#t-agree-req').innerHTML);
+        check('agreement-title: [선택] → em.optional', !!$('#t-agree-opt em.optional'), $('#t-agree-opt').innerHTML);
+
+        // adapter: address-book
+        check('address-book: 행 클래스', $('#t-addr-row').classList.contains('addr-item'), $('#t-addr-row').className);
+        check('address-book: data-label = 머리칸 글자', $('#t-addr-row .addr-recipient') && $('#t-addr-row .addr-recipient').getAttribute('data-label') === '수령인', '');
+        check('address-book: 체크박스 name/value 유지', $('#t-addr-check').name === 'ma_idx[]' && $('#t-addr-check').value === '7', '');
+
+        // adapter: custom-select
+        report(false);
+        var select = $('#t-select');
+        var custom = select.nextElementSibling;
+        check('custom-select: 원본 뒤에 생성', custom && custom.classList.contains('custom-select'), custom && custom.className);
+        check('custom-select: 원본은 화면에서만 숨김', select.classList.contains('sk-visually-hidden') && select.isConnected, '');
+        check('custom-select: data-sk-native 제외', !$('#t-select-native').nextElementSibling || !$('#t-select-native').nextElementSibling.classList.contains('custom-select'), '');
+        check('custom-select: 상품 옵션 제외', !$('#t-select-option').nextElementSibling, '');
+        check('custom-select: 주문서 제외', !$('#t-order-select').nextElementSibling, '');
+
+        var changes = 0;
+        select.addEventListener('change', function () { changes++; });
+        custom.querySelector('.custom-select-default').click();
+        check('custom-select: 클릭하면 열림', custom.classList.contains('is-open') && custom.querySelector('button').getAttribute('aria-expanded') === 'true', custom.className);
+        custom.querySelector('[data-value="name"]').click();
+        check('custom-select: 선택 → 원본 value', select.value === 'name', select.value);
+        check('custom-select: 선택 → change 이벤트 + inline onchange', changes === 1 && window.__inlineChange === 1, 'change=' + changes + ', inline=' + window.__inlineChange);
+        check('custom-select: 선택 후 닫힘', !custom.classList.contains('is-open'), '');
+        custom.querySelector('.custom-select-default').click();
+        custom.querySelector('[data-value="high"]').click();
+        check('custom-select: 비활성 옵션은 선택 안 됨', select.value === 'name', select.value);
+        document.body.click();
+
+        // 원본 → 커스텀 (양방향)
+        select.value = 'low';
+        select.dispatchEvent(new Event('change'));
+        check('custom-select: 원본 변경 → 화면 글자', custom.querySelector('.custom-select-text').textContent === '낮은 가격', custom.querySelector('.custom-select-text').textContent);
+
+        // 키보드
+        var button = custom.querySelector('button');
+        button.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+        var list = custom.querySelector('.custom-select-options');
+        check('custom-select: ↓ 키로 열림 + 목록 포커스', custom.classList.contains('is-open') && document.activeElement === list, document.activeElement && document.activeElement.className);
+        list.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+        list.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+        check('custom-select: ↓ Enter → 다음 선택 가능 항목(비활성 건너뜀)', select.value === 'name', select.value);
+
+        // 카페24가 옵션을 다시 그리는 경우
+        var option = document.createElement('option');
+        option.value = 'best'; option.text = '인기순';
+        select.appendChild(option);
+        await nextFrame(); await nextFrame();
+        check('custom-select: 옵션 추가 → 목록 갱신', !!custom.querySelector('[data-value="best"]'), custom.querySelectorAll('.custom-select-option').length + '개');
+
+        // 나중에 생기는 select
+        var late = document.createElement('select');
+        late.id = 't-late'; late.innerHTML = '<option>늦게 생긴 select</option>';
+        $('#demo-select .demo-row').appendChild(late);
+        await nextFrame(); await nextFrame();
+        check('custom-select: 늦게 생긴 select도 변환', late.nextElementSibling && late.nextElementSibling.classList.contains('custom-select'), '');
+        check('custom-select: 중복 생성 없음', document.querySelectorAll('#t-select + .custom-select + .custom-select').length === 0, '');
+
+        report(true);
+    }
+
+    function safeRun() {
+        run().catch(function (error) { results.push('FAIL 검사 코드 오류  → ' + error.message); report(true); });
+    }
+    if (document.readyState === 'complete') safeRun();
+    else window.addEventListener('load', function () { setTimeout(safeRun, 50); });
+})();
+</script>
+</body>
+</html>

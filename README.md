@@ -24,7 +24,7 @@ cafe24-automation/
 ├── references/          # 레퍼런스 스킨 4개 (로컬 전용, 업로드하지 않음)
 ├── workspace/
 │   └── target-skin/     # 실제 쇼핑몰 작업 스킨 (로컬 전용, 업로드하지 않음)
-├── skinkit/             # 공통 스타일 시스템 (구축 예정)
+├── skinkit/             # 공통 스타일 시스템 (토큰 · 컴포넌트 CSS · Style Adapter)
 ├── standards/           # 표준 문서
 ├── docs/                # 분석 보고서
 ├── templates/           # 자동화 템플릿 (준비 중)
@@ -40,6 +40,7 @@ cafe24-automation/
 | [standards/folder-structure.md](standards/folder-structure.md) | 폴더 구조, `layout.html` 호출 순서, 카페24 기본 파일 패치 규칙 |
 | [standards/ui-conventions.md](standards/ui-conventions.md) | 디자인 토큰, 브레이크포인트, CSS/JS 작성 규칙, 주석 규칙 |
 | [standards/component-catalog.md](standards/component-catalog.md) | 자동화 대상 컴포넌트 목록, 마크업 계약, 검증 체크리스트 |
+| [skinkit/README.md](skinkit/README.md) | **SkinKit 사용법** (카페24 적용, 테마 만들기, 빌드) |
 | [docs/skinkit-analysis.md](docs/skinkit-analysis.md) | SkinKit 1차 분석 보고서 (공통화 대상, 변수 설계, Style Adapter) |
 | [CLAUDE.md](CLAUDE.md) | Claude Code가 따르는 작업 규칙 전체 |
 
@@ -87,6 +88,7 @@ UI를 고칠 때는 **CSS → HTML 구조 변경 → JS DOM 조작** 순서로 �
 - [x] 레퍼런스 스킨 4개 수집
 - [x] 표준 문서 초안 (폴더 구조, UI 규칙, 컴포넌트 목록)
 - [x] SkinKit 1차 분석 ([보고서](docs/skinkit-analysis.md))
-- [ ] `skinkit` 공통 스타일 시스템 구축 (토큰, 컴포넌트, Style Adapter)
-- [ ] 실제 쇼핑몰 스킨에 적용 및 검증
+- [x] `skinkit` 공통 스타일 시스템 1차 구축 (토큰, 공통 UI CSS, Style Adapter 4종 + core, 빌드·검사 도구, 데모 자동 검사 44항목)
+- [ ] 실제 쇼핑몰 스킨에 적용 및 검증 ([미검증 항목](skinkit/README.md#6-실제-쇼핑몰에서-확인할-것))
+- [ ] catalog JS 컴포넌트 (header-sticky, floating-actions, tab, modal …)
 - [ ] `templates/` 자동화 템플릿 작성
