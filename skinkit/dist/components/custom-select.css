@@ -72,8 +72,14 @@
 }
 
 /* 선택된 글자
-   기능: 길면 한 줄로 자르고 … 표시 */
+   기능: 길면 한 줄로 자르고 … 표시. 글자 크기·굵기·줄 높이·색을 직접 지정한다
+   이유: 버튼에서 물려받게 두면 쇼핑몰의 전체 선택자가 이긴다
+         (skin4: * { font-size: 10px } → 버튼은 14px인데 글자는 10px였다, 2026-11-19 확인) */
 .custom-select-text {
+    font-size: var(--sk-cselect-fs);
+    font-weight: var(--sk-cselect-fw);
+    line-height: var(--sk-cselect-lh);
+    color: var(--sk-cselect-color);
     overflow: hidden;
     min-width: 0;
     white-space: nowrap;

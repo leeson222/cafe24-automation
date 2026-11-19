@@ -191,6 +191,8 @@
     --sk-cselect-px: var(--sk-select-px);
     --sk-cselect-px-sm: var(--sk-select-px-sm);
     --sk-cselect-fs: 14px;
+    --sk-cselect-fw: 400;
+    --sk-cselect-lh: 1.5;                    /* 150% */
     --sk-cselect-radius: var(--sk-input-radius);
     --sk-cselect-border: var(--sk-input-border);
     --sk-cselect-bg: var(--sk-input-bg);
