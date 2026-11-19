@@ -1,11 +1,13 @@
 /* ==========================================================================
-   SkinKit · adapters/core.js
+   SkinKit · adapters/core.js   (공통 — head.html에서 모든 페이지에 불러온다)
    기능: Style Adapter 등록·실행 관리
-         - 켜기: <html data-sk-adapters="address-form agreement-title"> 또는
-                 window.SkinKitConfig = { adapters: ['custom-select'] } (core.js보다 먼저 선언)
+         - 켜기: adapter 파일을 불러오면 켜진다 (필요한 페이지 파일 상단에서 @js로 부른다)
          - 실행: DOM 준비 후 한 번, 이후 카페24가 요소를 다시 그리면 해당 adapter만 다시 실행
    이유: novadeal은 기능마다 MutationObserver를 따로 달아 71개(그중 body 전체 감시 42개)였다.
          감시 장치를 하나만 두고, 새로 생긴 노드가 adapter의 대상일 때만 실행한다.
+   불러오는 순서: adapter가 core.js보다 먼저 불려도 된다.
+         카페24가 페이지 파일의 @js를 레이아웃의 @js보다 앞에 출력할 수도 있어서,
+         먼저 불린 adapter는 SkinKit._pendingAdapters에 등록을 맡겨 두고 core.js가 받아 실행한다
    규칙 (모든 adapter가 지킨다)
      1. 대상이 없으면 아무것도 하지 않는다
      2. 여러 번 실행해도 결과가 같다 (data-sk-adapted 표시로 중복 래퍼를 막는다)
@@ -24,32 +26,8 @@
 
     var registry = {};       // 이름 → { match, run }
     var order = [];          // 등록 순서 (실행 순서)
-    var enabledList = readEnabled();
     var isReady = false;
     var observer = null;
-
-    // ----------------------------------------------------------------
-    // 기능: 켜진 adapter 목록을 읽는다 (html 속성 + 전역 설정을 합친다)
-    // 이유: 기본값은 모두 꺼짐이다. 쇼핑몰이 필요한 것만 명시해서 켠다
-    // ----------------------------------------------------------------
-    function readEnabled() {
-        var list = [];
-        var attr = document.documentElement.getAttribute('data-sk-adapters') || '';
-        attr.split(/[\s,]+/).forEach(function (name) {
-            if (name) list.push(name);
-        });
-        var config = window.SkinKitConfig || {};
-        if (Array.isArray(config.adapters)) {
-            config.adapters.forEach(function (name) {
-                if (list.indexOf(name) < 0) list.push(name);
-            });
-        }
-        return list;
-    }
-
-    function isEnabled(name) {
-        return enabledList.indexOf(name) > -1;
-    }
 
     // ----------------------------------------------------------------
     // 기능: adapter 하나를 실행한다
@@ -70,9 +48,7 @@
     }
 
     function runAll() {
-        order.forEach(function (name) {
-            if (isEnabled(name)) runOne(name);
-        });
+        order.forEach(runOne);
         discardOwnMutations();
     }
 
@@ -90,7 +66,7 @@
                 var node = record.addedNodes[i];
                 if (node.nodeType !== 1) continue;
                 order.forEach(function (name) {
-                    if (!isEnabled(name) || pending[name]) return;
+                    if (pending[name]) return;
                     var match = registry[name].match;
                     if (node.matches(match) || node.querySelector(match)) pending[name] = true;
                 });
@@ -102,8 +78,10 @@
         discardOwnMutations();
     }
 
+    // 기능: 등록된 adapter가 있을 때만 감시를 시작한다
+    // 이유: adapter를 하나도 불러오지 않은 페이지에서는 감시 비용이 없게 한다
     function startObserver() {
-        if (observer || !document.body || !enabledList.length) return;
+        if (observer || !document.body || !order.length) return;
         observer = new MutationObserver(onMutations);
         observer.observe(document.body, { childList: true, subtree: true });
     }
@@ -114,41 +92,52 @@
         startObserver();
     }
 
+    function register(name, def) {
+        if (registry[name]) return;
+        registry[name] = def;
+        order.push(name);
+        // 이유: DOM 준비 후에 늦게 불러온 adapter도 바로 적용되게 한다
+        if (isReady) {
+            runOne(name);
+            discardOwnMutations();
+            startObserver();
+        }
+    }
+
     // ----------------------------------------------------------------
     // 공개 API
     // ----------------------------------------------------------------
     SkinKit.adapters = {
         /**
-         * 기능: adapter 등록
-         * @param {string} name   켜기 목록에 쓰는 이름
+         * 기능: adapter 등록 (등록하면 켜진다)
+         * @param {string} name
          * @param {{match: string, run: function(Document)}} def
          *        match: 다시 실행할지 판단할 CSS 선택자 (새로 생긴 노드가 이것이거나 포함하면 실행)
          *        run:   실제 작업. 여러 번 불려도 결과가 같아야 한다
          */
-        register: function (name, def) {
-            if (registry[name]) return;
-            registry[name] = def;
-            order.push(name);
-            // 이유: DOM 준비 후에 늦게 불러온 adapter도 바로 적용되게 한다
-            if (isReady && isEnabled(name)) {
-                runOne(name);
-                discardOwnMutations();
-                startObserver();
-            }
-        },
+        register: register,
 
         // 기능: 쇼핑몰 JS가 DOM을 직접 바꾼 뒤 adapter를 다시 적용할 때 쓴다
         refresh: function (name) {
             if (name) {
-                if (registry[name] && isEnabled(name)) runOne(name);
+                if (registry[name]) runOne(name);
                 discardOwnMutations();
             } else {
                 runAll();
             }
         },
 
-        isEnabled: isEnabled
+        // 기능: 지금 켜진 adapter 이름 목록 (확인용)
+        list: function () {
+            return order.slice();
+        }
     };
+
+    // 기능: core.js보다 먼저 불린 adapter의 등록을 받는다
+    (SkinKit._pendingAdapters || []).forEach(function (entry) {
+        register(entry[0], entry[1]);
+    });
+    delete SkinKit._pendingAdapters;
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', onReady);

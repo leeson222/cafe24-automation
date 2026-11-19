@@ -1,6 +1,6 @@
 /* ==========================================================================
-   SkinKit · adapters/custom-select.js   (이름: custom-select, 선택형)
-   기능: 원본 <select>를 화면에서 숨기고 ul/li 커스텀 select(components/select.css)를 바로 뒤에 만든다.
+   SkinKit · features/custom-select.js   (선택 기능 — 이 파일을 불러오면 켜진다. features/custom-select.css와 함께)
+   기능: 원본 <select>를 화면에서 숨기고 ul/li 커스텀 select(features/custom-select.css)를 바로 뒤에 만든다.
          원본 select는 그대로 남아 값 전송·카페24 이벤트를 담당한다 (프록시 방식).
    이유: 원본 select는 브라우저마다 목록 모양이 달라 시안대로 꾸밀 수 없다.
          novadeal dropdown.js(전체 select)와 basket.js(옵션 변경 레이어)에 따로 있던 코드를 합쳤다.
@@ -26,8 +26,13 @@
 (function (window, document) {
     'use strict';
 
-    var SkinKit = window.SkinKit;
-    if (!SkinKit || !SkinKit.adapters) return;
+    // 기능: core.js가 먼저 불렸든 나중에 불리든 등록한다
+    // 이유: 카페24가 페이지 @js와 레이아웃 @js의 출력 순서를 보장하지 않을 수 있다. 먼저 불리면 대기열에 맡긴다
+    var SkinKit = window.SkinKit = window.SkinKit || {};
+    function register(name, def) {
+        if (SkinKit.adapters) SkinKit.adapters.register(name, def);
+        else (SkinKit._pendingAdapters = SkinKit._pendingAdapters || []).push([name, def]);
+    }
 
     var config = (window.SkinKitConfig || {}).customSelect || {};
 
@@ -365,7 +370,7 @@
         });
     }
 
-    SkinKit.adapters.register('custom-select', {
+    register('custom-select', {
         match: 'select, option',
         run: function (root) {
             cleanup();

@@ -1,0 +1,89 @@
+/*! SkinKit components/check.css — 자동 생성. 직접 고치지 말고 skinkit/components/check.css을 고친 뒤 다시 빌드한다 (bp layout 1024 / small 767) */
+/* ==========================================================================
+   SkinKit · components/check.css
+   기능: 체크박스·라디오 모양
+   이유: 카페24 ec-base-ui.css도 appearance:none + 이미지(img.echosting.cafe24.com)로 그린다.
+         SkinKit은 같은 방식으로 이미지만 토큰으로 바꾼다.
+     - novadeal은 ::after 가상 요소와 쇼핑몰 CDN 체크 이미지를 썼다.
+       input의 가상 요소는 브라우저마다 지원이 달라 배경 이미지·box-shadow로 그린다
+     - 범위·주문서 제외는 input.css와 같다
+   ========================================================================== */
+
+/* ------------------------------------------------------------------------
+   공통 모양
+   기능: 크기·테두리·배경
+   우선순위: (1,1,1). 카페24 input[type="checkbox"](0,1,1)보다 강하다
+   ------------------------------------------------------------------------ */
+:is(#contents, #popup, .ec-base-layer) input:is([type="checkbox"], [type="radio"]):where(:not(:is(.xans-order-form, #mCafe24Order) *)) {
+    box-sizing: border-box;
+    flex: none;     /* 이유: flex 줄 안에서 체크박스가 찌그러지지 않게 한다 */
+    width: var(--sk-check-size);
+    height: var(--sk-check-size);
+    margin: 0;
+    border: 1px solid var(--sk-check-border);
+    background-color: var(--sk-check-bg);
+    background-image: none;
+    vertical-align: middle;
+    cursor: pointer;
+    transition: border-color var(--sk-duration), background-color var(--sk-duration), box-shadow var(--sk-duration);
+    -webkit-appearance: none;
+    appearance: none;
+}
+:is(#contents, #popup, .ec-base-layer) input[type="checkbox"]:where(:not(:is(.xans-order-form, #mCafe24Order) *)) {
+    border-radius: var(--sk-check-radius);
+}
+:is(#contents, #popup, .ec-base-layer) input[type="radio"]:where(:not(:is(.xans-order-form, #mCafe24Order) *)) {
+    width: var(--sk-radio-size);
+    height: var(--sk-radio-size);
+    border-radius: 50%;
+}
+
+/* hover */
+:is(#contents, #popup, .ec-base-layer) input:is([type="checkbox"], [type="radio"]):where(:not(:is(.xans-order-form, #mCafe24Order) *)):not(:disabled):hover {
+    border-color: var(--sk-check-hover-border);
+}
+
+/* ------------------------------------------------------------------------
+   선택됨
+   기능: 체크박스 = 주색 배경 + 체크 아이콘 / 라디오 = 주색 원 + 가운데 점
+   이유: 라디오 점은 box-shadow inset으로 그린다. 이미지 없이 점 크기·색을 토큰으로 바꿀 수 있다
+   ------------------------------------------------------------------------ */
+:is(#contents, #popup, .ec-base-layer) input[type="checkbox"]:where(:not(:is(.xans-order-form, #mCafe24Order) *)):checked {
+    border-color: var(--sk-check-checked-border);
+    background-color: var(--sk-check-checked-bg);
+    background-image: var(--sk-check-mark);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: var(--sk-check-mark-size);
+}
+:is(#contents, #popup, .ec-base-layer) input[type="radio"]:where(:not(:is(.xans-order-form, #mCafe24Order) *)):checked {
+    border-color: var(--sk-radio-checked-color);
+    background-color: var(--sk-radio-dot-color);
+    background-image: none;
+    /* 기능: 바깥 테두리 안쪽을 주색으로 채우고 가운데 점만 남긴다
+       계산: (전체 크기 - 테두리 2px - 점 크기) / 2 = 주색 띠 두께 */
+    box-shadow: inset 0 0 0 calc((var(--sk-radio-size) - 2px - var(--sk-radio-dot-size)) / 2) var(--sk-radio-checked-color);
+}
+
+/* ------------------------------------------------------------------------
+   비활성
+   기능: 선택 불가 상태
+   ------------------------------------------------------------------------ */
+:is(#contents, #popup, .ec-base-layer) input:is([type="checkbox"], [type="radio"]):where(:not(:is(.xans-order-form, #mCafe24Order) *)):disabled {
+    cursor: not-allowed;
+    background-color: var(--sk-input-disabled-bg);
+}
+:is(#contents, #popup, .ec-base-layer) input[type="checkbox"]:where(:not(:is(.xans-order-form, #mCafe24Order) *)):checked:disabled {
+    border-color: var(--sk-check-disabled-bg);
+    background-color: var(--sk-check-disabled-bg);
+}
+:is(#contents, #popup, .ec-base-layer) input[type="radio"]:where(:not(:is(.xans-order-form, #mCafe24Order) *)):checked:disabled {
+    border-color: var(--sk-check-disabled-bg);
+    box-shadow: inset 0 0 0 calc((var(--sk-radio-size) - 2px - var(--sk-radio-dot-size)) / 2) var(--sk-check-disabled-bg);
+}
+
+/* 키보드 포커스 */
+:is(#contents, #popup, .ec-base-layer) input:is([type="checkbox"], [type="radio"]):focus-visible {
+    outline: var(--sk-focus-width) solid var(--sk-focus-color);
+    outline-offset: var(--sk-focus-offset);
+}

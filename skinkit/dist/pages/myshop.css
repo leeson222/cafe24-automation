@@ -1,5 +1,7 @@
+/*! SkinKit pages/myshop.css — 자동 생성. 직접 고치지 말고 skinkit/pages/myshop.css을 고친 뒤 다시 빌드한다 (bp layout 1024 / small 767) */
 /* ==========================================================================
-   SkinKit · cafe24/myshop.css
+   SkinKit · pages/myshop.css   (페이지: myshop/addr/list.html 상단)
+   함께 불러오는 JS: adapters/address-book.js
    기능: 마이쇼핑 배송 주소록(.xans-myshop-addrlist)을 작은 화면에서 카드 목록으로 보여 준다
          (adapter: address-book이 붙인 클래스·data-label 사용)
    이유: novadeal myshop.js는 화면 폭이 바뀔 때마다 JS로 is-mobile 클래스를 넣고 빼고,

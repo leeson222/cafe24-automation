@@ -1,5 +1,6 @@
 /* ==========================================================================
-   SkinKit · cafe24/member.css
+   SkinKit · pages/member.css   (페이지: member/join.html, modify.html, agreement.html 상단)
+   함께 불러오는 JS: adapters/address-form.js, adapters/agreement-title.js
    기능: 회원가입·정보수정 화면 보정
          - 우편번호 입력칸 + 검색 버튼 한 줄 (adapter: address-form)
          - 약관 제목의 [필수]/[선택] 표시 (adapter: agreement-title)

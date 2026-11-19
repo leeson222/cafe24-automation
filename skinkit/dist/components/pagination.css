@@ -1,0 +1,85 @@
+/*! SkinKit components/pagination.css — 자동 생성. 직접 고치지 말고 skinkit/components/pagination.css을 고친 뒤 다시 빌드한다 (bp layout 1024 / small 767) */
+/* ==========================================================================
+   SkinKit · components/pagination.css
+   기능: 카페24 페이지 번호 (.ec-base-paginate.typeList)
+         [처음?] [이전] 1 2 3 [다음] [끝?]
+   이유: 카페24 원본은 화살표를 가상 요소 선(border)으로 그리고, 처음/끝은 화살표 두 개다.
+         novadeal은 화살표를 쇼핑몰 CDN svg 4개로 바꿨고, board.css가 png로 한 번 더 덮어써 충돌했다.
+         SkinKit은 원본 가상 요소를 살리고 색·크기만 토큰으로 바꾼다.
+   제외: novadeal pagenation.js가 붙이는 .first/.last/.is-disabled/.is-hidden은 쇼핑몰 JS 전용이라 넣지 않는다
+   ========================================================================== */
+
+/* 전체 줄
+   기능: 가운데 정렬, 항목 간격 */
+:is(#wrap, body) .ec-base-paginate.typeList {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--sk-page-gap);
+    margin: var(--sk-page-margin);
+}
+:is(#wrap, body) .ec-base-paginate.typeList ol {
+    display: inline-flex;
+    gap: var(--sk-page-gap);
+    margin: 0;
+}
+:is(#wrap, body) .ec-base-paginate.typeList li {
+    margin: 0;
+}
+
+/* ------------------------------------------------------------------------
+   번호
+   기능: 정사각 칸, 현재 페이지(.this) 강조
+   ------------------------------------------------------------------------ */
+:is(#wrap, body) .ec-base-paginate.typeList li a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    width: var(--sk-page-size);
+    height: var(--sk-page-size);
+    padding: 0;
+    border: 1px solid var(--sk-page-border);
+    border-radius: var(--sk-page-radius);
+    font-size: var(--sk-page-fs);
+    font-weight: var(--sk-page-fw);
+    line-height: 1;
+    color: var(--sk-page-color);
+    background-color: var(--sk-page-bg);
+    transition: background-color var(--sk-duration);
+}
+:is(#wrap, body) .ec-base-paginate.typeList li a:not(.this):hover {
+    background-color: var(--sk-page-hover-bg);
+}
+:is(#wrap, body) .ec-base-paginate.typeList li a.this {
+    border-color: var(--sk-page-active-border);
+    color: var(--sk-page-active-color);
+    background-color: var(--sk-page-active-bg);
+}
+
+/* ------------------------------------------------------------------------
+   이전/다음/처음/끝 화살표
+   기능: 칸 크기를 번호와 맞추고 화살표 선 색·크기를 토큰으로
+   이유: 카페24 원본 선택자(> a::after, > a:first-child::before …)를 그대로 따라간다
+   ------------------------------------------------------------------------ */
+:is(#wrap, body) .ec-base-paginate.typeList > a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: var(--sk-page-size);
+    height: var(--sk-page-size);
+    line-height: 1;
+    background: transparent;
+}
+:is(#wrap, body) .ec-base-paginate.typeList > a::after,
+:is(#wrap, body) .ec-base-paginate.typeList > a:first-child::before,
+:is(#wrap, body) .ec-base-paginate.typeList > a:last-child::before {
+    width: var(--sk-page-arrow-size);
+    height: var(--sk-page-arrow-size);
+    border-color: var(--sk-page-arrow-color);
+}
+:is(#wrap, body) .ec-base-paginate.typeList > a:focus-visible,
+:is(#wrap, body) .ec-base-paginate.typeList li a:focus-visible {
+    outline: var(--sk-focus-width) solid var(--sk-focus-color);
+    outline-offset: var(--sk-focus-offset);
+}

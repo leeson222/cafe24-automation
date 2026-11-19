@@ -1,41 +1,78 @@
 {
-  "$comment": "SkinKit 빌드 설정. 브레이크포인트와 파일 순서를 여기서만 관리한다. 바꾼 뒤 node skinkit/tools/build.mjs 를 다시 실행한다",
+  "$comment": "SkinKit 빌드·설치 설정. 브레이크포인트, 파일 묶음, 페이지별 대상을 여기서만 관리한다. 바꾼 뒤 node skinkit/tools/build.mjs 를 다시 실행한다",
 
   "breakpoint": {
     "layout": 1024,
     "small": 767
   },
 
-  "css": [
-    "tokens/primitives.css",
-    "tokens/semantic.css",
-    "tokens/components.css",
+  "$comment_publicPath": "카페24 스킨 루트 기준 dist 경로. @css/@js 선언에 쓴다",
+  "publicPath": "/skinkit/dist",
 
-    "base/reset.css",
-    "base/typography.css",
-    "base/utility.css",
+  "$comment_common": "모든 페이지 공통. dist/head.html에 이 순서대로 선언되고, 레이아웃 <head>에서 한 번 불러온다",
+  "common": {
+    "css": [
+      "tokens/primitives.css",
+      "tokens/semantic.css",
+      "tokens/components.css",
 
-    "components/button.css",
-    "components/input.css",
-    "components/check.css",
-    "components/select.css",
-    "components/quantity.css",
-    "components/pagination.css",
+      "base/reset.css",
+      "base/typography.css",
+      "base/utility.css",
 
-    "cafe24/layer.css",
-    "cafe24/icons.css",
-    "cafe24/empty.css",
-    "cafe24/product-info.css",
-    "cafe24/board.css",
-    "cafe24/member.css",
-    "cafe24/myshop.css"
-  ],
+      "components/button.css",
+      "components/input.css",
+      "components/check.css",
+      "components/quantity.css",
+      "components/pagination.css",
 
-  "js": [
-    "adapters/core.js",
-    "adapters/address-form.js",
-    "adapters/agreement-title.js",
-    "adapters/custom-select.js",
-    "adapters/address-book.js"
-  ]
+      "cafe24/layer.css",
+      "cafe24/icons.css",
+      "cafe24/empty.css"
+    ],
+    "js": [
+      "adapters/core.js"
+    ]
+  },
+
+  "$comment_pages": "페이지 전용. 설치 스크립트가 targets 파일 맨 위(@layout 다음 줄)에 css·js를 선언한다. js(adapter)는 불러오면 켜진다",
+  "pages": {
+    "board": {
+      "css": ["pages/board.css"],
+      "js": [],
+      "targets": ["board/**/*.html"]
+    },
+    "member": {
+      "css": ["pages/member.css"],
+      "js": ["adapters/address-form.js", "adapters/agreement-title.js"],
+      "targets": ["member/join.html", "member/modify.html", "member/agreement.html"]
+    },
+    "myshop": {
+      "css": ["pages/myshop.css"],
+      "js": ["adapters/address-book.js"],
+      "targets": ["myshop/addr/list.html"]
+    },
+    "product": {
+      "css": ["pages/product.css"],
+      "js": [],
+      "targets": ["product/detail.html"]
+    }
+  },
+
+  "$comment_features": "선택 기능. 설치 시 --features로 고르면 레이아웃 <head>에 head.html 다음으로 선언된다",
+  "features": {
+    "custom-select": {
+      "css": ["features/custom-select.css"],
+      "js": ["features/custom-select.js"]
+    },
+    "inner": {
+      "css": ["features/inner.css"],
+      "js": []
+    }
+  },
+
+  "$comment_extra": "설치에 쓰지 않지만 dist에 함께 넣는 파일 (필요한 쇼핑몰이 직접 복사해 쓴다)",
+  "extra": {
+    "css": ["tokens/legacy-alias.css"]
+  }
 }

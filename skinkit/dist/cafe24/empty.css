@@ -1,0 +1,34 @@
+/*! SkinKit cafe24/empty.css — 자동 생성. 직접 고치지 말고 skinkit/cafe24/empty.css을 고친 뒤 다시 빌드한다 (bp layout 1024 / small 767) */
+/* ==========================================================================
+   SkinKit · cafe24/empty.css
+   기능: "상품이 없습니다", "게시물이 없습니다" 같은 빈 상태 문구
+   이유: 카페24 공통 마크업(.ec-base-prdEmpty, 목록 표 td.message)이라 모든 쇼핑몰에 쓴다.
+         novadeal base/common.css에서 옮기고 !important를 뺐다
+   ========================================================================== */
+
+/* 상품 목록이 비었을 때
+   기능: 안내 문구 크기, 이미지와 문구 간격 */
+:is(#wrap, body) .ec-base-prdEmpty {
+    font-size: var(--sk-empty-fs);
+    font-weight: var(--sk-empty-fw);
+    line-height: 1.5;
+    color: var(--sk-empty-color);
+}
+:is(#wrap, body) .ec-base-prdEmpty img {
+    margin-bottom: var(--sk-empty-img-gap);
+}
+
+/* 목록 표가 비었을 때 (게시판, 주문 내역, 주소록 …)
+   기능: 표 한 칸에 나오는 안내 문구
+   이유: 이미지가 있으면 가운데 위에 둔다 */
+:is(#wrap, body) .ec-base-table.typeList td.message {
+    width: 100%;
+    font-size: var(--sk-empty-table-fs);
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--sk-empty-table-color);
+}
+:is(#wrap, body) .ec-base-table.typeList td.message img {
+    display: block;
+    margin: 0 auto var(--sk-empty-img-gap);
+}

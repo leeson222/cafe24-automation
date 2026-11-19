@@ -12,8 +12,13 @@
 (function (window, document) {
     'use strict';
 
-    var SkinKit = window.SkinKit;
-    if (!SkinKit || !SkinKit.adapters) return;
+    // 기능: core.js가 먼저 불렸든 나중에 불리든 등록한다
+    // 이유: 카페24가 페이지 @js와 레이아웃 @js의 출력 순서를 보장하지 않을 수 있다. 먼저 불리면 대기열에 맡긴다
+    var SkinKit = window.SkinKit = window.SkinKit || {};
+    function register(name, def) {
+        if (SkinKit.adapters) SkinKit.adapters.register(name, def);
+        else (SkinKit._pendingAdapters = SkinKit._pendingAdapters || []).push([name, def]);
+    }
 
     var config = (window.SkinKitConfig || {}).addressForm || {};
     var containers = config.containers || ['#join_zipcode_wrap', '#fmodify_zipcode_wrap'];
@@ -43,7 +48,7 @@
         wrapper.appendChild(second);
     }
 
-    SkinKit.adapters.register('address-form', {
+    register('address-form', {
         match: '#postcode1',
         run: function (root) {
             containers.forEach(function (selector) {

@@ -1,0 +1,22 @@
+/*! SkinKit features/inner.css — 자동 생성. 직접 고치지 말고 skinkit/features/inner.css을 고친 뒤 다시 빌드한다 (bp layout 1024 / small 767) */
+/* ==========================================================================
+   SkinKit · features/inner.css   (선택 기능 — 이 파일을 불러오면 켜진다)
+   기능: .inner를 콘텐츠 최대 폭 컨테이너로 정의한다 (가운데 정렬 + 좌우 여백)
+   이유: 폭(--sk-max-container)은 쇼핑몰마다 다르다.
+         novadeal은 1200px 이하에서만 좌우 16px 여백을 줬다. 미디어쿼리에는 var()를 못 쓰므로
+         여백을 항상 두고 최대 폭에 여백만큼 더한다. 콘텐츠 폭은 그대로 --sk-max-container가 된다
+   선택인 이유: .inner는 쇼핑몰마다 직접 정의하는 흔한 이름이다. 기본으로 넣으면 쇼핑몰이 정하지 않은
+         속성이 섞인다. skin4 적용 중 확인 — skin4 .inner { width: 1400px }에 SkinKit max-width(1232px)가
+         남아 헤더·푸터·본문이 1232px로 줄었다.
+   쓰지 않는 경우: 쇼핑몰 CSS가 .inner를 직접 정의할 때
+   ========================================================================== */
+
+.inner {
+    width: 100%;
+    max-width: calc(var(--sk-max-container) + var(--sk-container-gutter) * 2);
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: var(--sk-container-gutter);
+    padding-left: var(--sk-container-gutter);
+    box-sizing: border-box;
+}

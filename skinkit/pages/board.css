@@ -1,0 +1,181 @@
+/* ==========================================================================
+   SkinKit · pages/board.css   (페이지: board 폴더 아래 모든 html 상단에서 불러온다)
+   기능: 카페24 게시판 기본 화면 보정 — 목록 표 / 글 보기 / 댓글 / 이전·다음 글
+   이유: novadeal board.css(527줄)에서 카페24 기본 마크업에 해당하는 블록만 옮겼다.
+   제외 (쇼핑몰마다 정책이 다르다)
+     - 검색창 숨김(.xans-board-search display:none), 썸네일 칸 숨김(td.thumb)
+     - 목록 작성자·날짜 색: novadeal 전용 클래스(td.list-writer, td.list-date)
+     - 정렬 select 화살표 이미지: SkinKit select 화살표(input.css)로 대체
+     - 게시판 화살표 이미지(board-arrow-*.png): cafe24/icons.css로 대체
+   ========================================================================== */
+
+/* ------------------------------------------------------------------------
+   목록 표
+   기능: 칸 여백, 글자 크기·색, 머리칸 굵기
+   이유: novadeal은 color에 !important를 썼다. 우선순위(1,3,x)로 충분해서 뺐다
+   ------------------------------------------------------------------------ */
+:is(#wrap, body) .ec-base-table.typeList :is(th, td) {
+    padding: var(--sk-board-cell-p);
+    font-size: var(--sk-board-fs);
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--sk-board-color);
+}
+:is(#wrap, body) .ec-base-table.typeList th {
+    font-weight: var(--sk-board-th-fw);
+}
+:is(#wrap, body) .xans-board-listpackage .ec-base-table td.subject a {
+    font-size: var(--sk-board-fs);
+    font-weight: var(--sk-board-th-fw);
+    color: var(--sk-board-color);
+}
+
+/* ------------------------------------------------------------------------
+   글 보기
+   기능: 제목·작성 정보·본문
+   ------------------------------------------------------------------------ */
+.xans-board-read {
+    width: 100%;
+    max-width: var(--sk-board-read-max-width);
+    margin: 0 auto;
+}
+:is(#wrap, body) .xans-board-read .ec-base-table {
+    border-top: 0;
+}
+:is(#wrap, body) .xans-board-read .ec-base-table .head {
+    padding: 0 0 20px;
+    border-bottom: 1px solid var(--sk-color-border);
+}
+:is(#wrap, body) .xans-board-read .ec-base-table .head h3 {
+    margin-bottom: 8px;
+    font-size: var(--sk-board-read-title-fs);
+    font-weight: 700;
+    line-height: 1.5;
+    letter-spacing: var(--sk-letter-spacing);
+}
+
+/* 작성자 | 날짜 | 조회수
+   기능: 한 줄로 놓고 작성자 뒤에 세로 구분선
+   이유: novadeal은 color에 !important를 썼다. a 태그까지 같은 우선순위로 지정해 뺐다 */
+:is(#wrap, body) .xans-board-read .ec-base-table .description {
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+:is(#wrap, body) .xans-board-read .ec-base-table .description :is(span, a) {
+    font-size: var(--sk-text-caption);
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--sk-board-read-meta-color);
+}
+:is(#wrap, body) .xans-board-read .ec-base-table .description .name {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-right: 8px;
+    margin-right: 8px;
+}
+:is(#wrap, body) .xans-board-read .ec-base-table .description .name::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 1px;
+    height: 10px;
+    background-color: var(--sk-color-border);
+    transform: translateY(-50%);
+}
+:is(#wrap, body) .xans-board-read .ec-base-table .detail {
+    padding: 30px 0;
+    font-size: var(--sk-board-fs);
+    line-height: 1.5;
+}
+
+/* 글 보기·댓글 안 작은 버튼
+   기능: 수정·삭제·답변 버튼을 작게
+   이유: 크기 클래스(sizeS)가 붙어 있어도 이 영역에서는 더 작게 쓴다 (사용 위치 예외).
+         공통 버튼 토큰은 건드리지 않고 이 위치에서만 덮는다. 우선순위 (1,3,0) > 버튼 크기 (1,2,0) */
+:is(#wrap, body) :is(.xans-board-read, .xans-board-commentpackage) :is(.btnNormal, .btnNormalFix, .btnSubmit, .btnSubmitFix):is(.sizeS, .sizeM, .sizeL) {
+    min-width: 0;
+    padding: var(--sk-board-small-btn-p);
+    font-size: var(--sk-board-small-btn-fs);
+}
+
+/* ------------------------------------------------------------------------
+   댓글 목록
+   기능: 회색 바탕 상자 안에 댓글마다 흰 칸
+   ------------------------------------------------------------------------ */
+:is(#wrap, body) .xans-board-commentlist {
+    padding: 10px 16px;
+    border: 0;
+    border-radius: var(--sk-board-comment-radius);
+    background-color: var(--sk-board-comment-bg);
+}
+:is(#wrap, body) .xans-board-commentlist .boardComment li {
+    padding: 10px 0;
+}
+:is(#wrap, body) .xans-board-commentlist .boardComment li .comment {
+    padding: 10px;
+    border: 1px solid var(--sk-board-comment-item-border);
+    border-radius: var(--sk-board-comment-radius);
+    font-size: var(--sk-board-fs);
+    background-color: var(--sk-color-surface);
+}
+
+/* 댓글 쓰기
+   기능: 이름·비밀번호 칸을 한 줄로, 등록 버튼 오른쪽 정렬
+   이유: 댓글 영역 입력칸은 공통 입력창(54px)보다 작게 쓴다 (사용 위치 예외) */
+:is(#wrap, body) .xans-board-commentwrite .inside {
+    display: flex;
+    gap: 10px;
+    padding: 0;
+}
+:is(#wrap, body) .xans-board-commentwrite span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+:is(#wrap, body) .xans-board-commentwrite span.outside {
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+:is(#wrap, body) .xans-board-commentwrite textarea {
+    margin-bottom: 10px;
+}
+:is(#wrap, body) .xans-board-commentpackage input:is([type="text"], [type="password"]) {
+    height: auto;
+    padding: 5px 10px;
+    border-radius: var(--sk-radius-xs);
+    font-size: var(--sk-board-fs);
+}
+
+/* ------------------------------------------------------------------------
+   이전 글 / 다음 글
+   기능: 줄 여백, 라벨 굵기
+   ------------------------------------------------------------------------ */
+:is(#wrap, body) .xans-board-movement li {
+    padding: 16px 0;
+}
+:is(#wrap, body) .xans-board-movement li strong {
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    font-size: var(--sk-board-fs);
+    font-weight: 700;
+    line-height: 1.5;
+}
+:is(#wrap, body) .xans-board-movement li a {
+    padding: 0;
+    font-size: var(--sk-board-fs);
+    line-height: 1.5;
+}
+
+/* 작은 화면: 댓글 입력칸 세로 배치 */
+@media (max-width: 767px /*bp.small*/) {
+    :is(#wrap, body) .xans-board-commentwrite .inside {
+        flex-direction: column;
+    }
+    :is(#wrap, body) .xans-board-commentwrite .inside span {
+        width: 100%;
+    }
+}

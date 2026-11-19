@@ -27,16 +27,20 @@ skin/                              ← 카페24 스킨 루트 (예: skin15)
 ├─ css/, js/, product/, board/ …   ← 카페24 기본 페이지·모듈 파일
 │
 ├─ skinkit/                        ← 모든 스킨 공통 (자동화 대상). 상세: skinkit/README.md
-│  ├─ tokens/                      ← primitives → semantic → components → legacy-alias  [구현됨]
-│  ├─ base/                        ← reset, typography, utility                          [구현됨]
-│  ├─ components/                  ← 카페24 공통 UI: button, input, check, select, quantity, pagination  [구현됨]
-│  ├─ cafe24/                      ← 카페24 화면 보정: layer, icons, empty, product-info, board, member, myshop  [구현됨]
-│  ├─ adapters/                    ← 스타일용 DOM 변경 (옵트인): core, address-form, agreement-title, custom-select, address-book  [구현됨]
+│  ├─ tokens/                      ← primitives → semantic → components (+ legacy-alias 선택)   ┐
+│  ├─ base/                        ← reset, typography, utility                                 │ 공통 [구현됨]
+│  ├─ components/                  ← 카페24 공통 UI: button, input, check, quantity, pagination  │ (dist/head.html로
+│  ├─ cafe24/                      ← 카페24 공통 보정: layer, icons, empty                        │  레이아웃에서 한 번)
+│  ├─ adapters/core.js             ← adapter 등록·실행 관리                                     ┘
+│  ├─ adapters/                    ← address-form, agreement-title, address-book (페이지에서 불러오면 켜짐) [구현됨]
+│  ├─ pages/                       ← board, member, myshop, product (페이지 파일 상단에서 불러온다) [구현됨]
+│  ├─ features/                    ← custom-select(.css/.js), inner (선택 기능, 불러오면 켜짐) [구현됨]
 │  ├─ themes/                      ← theme.example.css (쇼핑몰이 복사해서 :root 값만 바꾼다)
 │  ├─ examples/demo.html           ← 카페24 마크업 흉내 + 자동 검사
-│  ├─ tools/build.mjs              ← 브레이크포인트 적용, 합치기, 토큰·경로 검사
-│  ├─ dist/                        ← skinkit.css, skinkit.js (카페24에 실제로 올리는 파일)
-│  ├─ skinkit.config.json          ← 브레이크포인트, 파일 순서
+│  ├─ tools/build.mjs              ← 브레이크포인트 적용, dist 생성(원본과 같은 구조 + head.html), 검사
+│  ├─ tools/install.mjs            ← 스킨에 설치·재설치·제거 (레이아웃·페이지 파일에 선언 블록, FTP 목록 출력)
+│  ├─ dist/                        ← 카페24에 실제로 올리는 파일 (기능별·페이지별 파일 + head.html)
+│  ├─ skinkit.config.json          ← 브레이크포인트, 공통·페이지·선택 기능 묶음, 페이지 대상 파일
 │  ├─ js/components/               ← catalog JS 컴포넌트 (header-sticky, floating-actions, tab, modal …)  [제안]
 │  └─ partials/                    ← <!--@import--> 대상 HTML 조각 (layout/, components/, modal/, env/)  [제안]
 │
@@ -132,30 +136,37 @@ skin/                              ← 카페24 스킨 루트 (예: skin15)
      이유: 공통 코드와 분리해서 개발/운영 스킨에 각각 다른 파일을 연결한다 -->
 <!--@import(/skinkit/partials/env/dev-head.html)-->
 
-<!-- ⑥ skinkit CSS → 쇼핑몰 테마 → 쇼핑몰 전용 CSS
-     기능: 공통 스타일, 쇼핑몰 토큰 값, 쇼핑몰 전용 스타일 순서
+<!-- ⑥ skinkit 공통 → 선택 기능 → 쇼핑몰 테마 → 쇼핑몰 전용 CSS
+     기능: 공통 스타일·adapter core, 쇼핑몰 토큰 값, 쇼핑몰 전용 스타일 순서
      이유: 테마(:root)는 skinkit 기본 토큰보다 뒤에 있어야 이긴다.
-           skinkit은 빌드로 한 파일(dist/skinkit.css)이라 layout.html·popup.html에 같은 줄만 넣는다 -->
-<!--@css(/skinkit/dist/skinkit.css)-->
+           공통 선언 목록은 dist/head.html 한 곳에 있어 layout.html·popup.html이 어긋나지 않는다.
+           이 블록은 tools/install.mjs가 카페24 기본 CSS(ec-base-*) 다음에 넣는다 (SKINKIT:head 표시) -->
+<!--@import(/skinkit/dist/head.html)-->
+<!--@css(/skinkit/dist/features/…)-->   (선택 기능을 설치한 경우)
 <!--@css(/{mall}/theme.css)-->
 <!--@css(/{mall}/assets/css/…)-->
 
-<!-- ⑦ skinkit adapter → 쇼핑몰 전용 JS
-     기능: 스타일용 DOM 변경(adapter). <html data-sk-adapters="…">로 켠 것만 실행된다
-     이유: adapter는 jQuery 없이 동작해서 ③④의 격리 순서와 무관하다 -->
-<!--@js(/skinkit/dist/skinkit.js)-->
+<!-- ⑦ 쇼핑몰 전용 JS
+     참고: adapter는 jQuery 없이 동작해서 ③④의 격리 순서와 무관하다. 페이지 전용 adapter는 ⑨에서 부른다 -->
 <!--@js(/{mall}/assets/js/…)-->
 
 <!-- ⑧ 카페24 EZ 초기화는 원래 위치를 유지한다
      이유: EZ 편집기와의 관계를 검증하지 않았다 [확인 필요] -->
 <!--@js(/ez/init.js)-->
+
+<!-- ⑨ 페이지 파일 상단 (예: member/join.html, @layout 다음 줄)
+     기능: 그 페이지에만 필요한 skinkit CSS와 adapter. adapter는 불러오면 켜진다
+     이유: 게시판·회원·마이쇼핑·상품상세 전용 스타일을 다른 페이지에 싣지 않는다.
+           tools/install.mjs가 SKINKIT:page 표시로 넣고 뺀다 -->
+<!--@css(/skinkit/dist/pages/member.css)-->
+<!--@js(/skinkit/dist/adapters/address-form.js)-->
 ```
 
 > [확인 필요] 네 스킨 모두 `sub_style.css`, `add_theme*.css`를 `</body>` 직전에 선언한다. 카페24가 `@css` 선언을 head로 모으는지, 선언 위치대로 불러오는지에 따라 skinkit CSS가 덮어써질 수 있다. 실제 페이지의 CSS 로딩 순서를 확인한 뒤 이 순서를 확정한다.
 
 ## 5. 파일 호출 규칙
 
-- 경로는 **스킨 루트 기준 절대경로**로 쓴다. 예: `<!--@js(/skinkit/dist/skinkit.js)-->`
+- 경로는 **스킨 루트 기준 절대경로**로 쓴다. 예: `<!--@js(/skinkit/dist/adapters/core.js)-->`
 - 모든 페이지에 필요한 파일은 `layout.html`에서, 한 페이지에만 필요한 파일은 **그 페이지 파일 상단**에서 부른다.
 - 같은 파일을 두 번 선언하지 않는다. novadeal에서는 폰트 CSS가 두 번 선언되어 있었다.
 - 파일을 옮기면 다음을 모두 확인한다.
@@ -203,8 +214,8 @@ if (!header || !fixed_margin) return;
 | `skin2/layout/basic/js/layout.js` | 검색 미사용으로 load 핸들러의 `searchLayer()` 호출 주석 처리 (검색 레이어가 없으면 null 오류) | skin2(단양더덕농산), 2026-11-17 |
 | `skin2/layout/basic/layout.html`, `popup.html` | 장바구니를 insanga 방식으로 교체하면서 노바딜 `basket.js` 호출 삭제 | skin2(단양더덕농산), 2026-11-17 |
 | `skin2/layout/basic/popup.html` | `project.css`·`promo.css`·`sub_main.css`·`project.js` 호출 삭제 | skin2(단양더덕농산), 2026-11-17 |
-| `skin4/layout/basic/layout.html`, `main.html` | onjangteo `reset.css` 앞에 `skinkit.css`·`onjangteo_custom/theme.css`·`skinkit.js` 호출 추가 (`[SKINKIT]` 주석) | skin4(onjangteo), 2026-11-19 |
-| `skin4/layout/basic/popup.html` | `ec-base-layer.css` 뒤에 `skinkit.css`·`theme.css`, `popup.js` 뒤에 `skinkit.js` 호출 추가 | skin4(onjangteo), 2026-11-19 |
+| `skin4/layout/basic/layout.html`, `main.html`, `popup.html` | `<head>` 카페24 기본 CSS 다음에 SkinKit 블록(`SKINKIT:head` — `head.html` + `onjangteo_custom/theme.css`). `tools/install.mjs`로 설치 (처음 손으로 넣은 한 파일 방식 블록은 지움) | skin4(onjangteo), 2026-11-19 |
+| `skin4/board/**/*.html` (42개) | `@layout` 다음 줄에 `SKINKIT:page board` 블록 (`pages/board.css`). `tools/install.mjs --pages board` | skin4(onjangteo), 2026-11-19 |
 | `skin4/onjangteo_custom/css/comm.css` | `.btnSubmit` 배경·hover `!important`에 `:not(.disabled)` 추가, 라디오 선택 이미지 규칙을 SkinKit 토큰으로 대체 (원본은 `[SKINKIT]` 주석에 보관) | skin4(onjangteo), 2026-11-19 — 쇼핑몰 CSS라 카페24 기본 파일은 아니지만 함께 기록 |
 
 > [제안] `#header`를 참조하는 카페24 함수가 깨지지 않게 하는 다른 방법(예: 빈 `#header` 요소 유지)도 검토해서 패치를 없앨 수 있는지 확인한다.
@@ -223,12 +234,13 @@ if (!header || !fixed_margin) return;
 | `aisoul/assets/css/base/reset.css`, `utility.css` | `skinkit/base/reset.css`, `typography.css`, `utility.css` |
 | `aisoul/assets/css/cafe24/ec-base/*` (사본) | 버린다 (불러오는 곳이 없었다) |
 | `aisoul/assets/css/components/button·input·quantity·pagenation` | `skinkit/components/*` |
-| `aisoul/assets/css/components/modal·board·member·myshop` 일부 | `skinkit/cafe24/*` (카페24 기본 마크업 부분만) |
+| `aisoul/assets/css/components/modal` 일부 | `skinkit/cafe24/layer.css` (공통) |
+| `aisoul/assets/css/components/board·member·myshop` 일부 | `skinkit/pages/board.css`, `member.css`, `myshop.css` (카페24 기본 마크업 부분만, 페이지 전용) |
 | `aisoul/assets/css/components/promo·project·products 대부분` | `{mall}/` |
-| `aisoul/assets/js/components/dropdown.js` + `basket.js`(select) | `skinkit/adapters/custom-select.js` (통합) |
-| `aisoul/assets/js/components/member.js`(우편번호·약관 제목) | `skinkit/adapters/address-form.js`, `agreement-title.js` |
-| `aisoul/assets/js/components/myshop.js`(주소록) | `skinkit/adapters/address-book.js` + `skinkit/cafe24/myshop.css` |
-| `aisoul/assets/js/components/product.js`(표 → dl) | 버린다. `skinkit/cafe24/product-info.css`(CSS 블록화)로 대체 |
+| `aisoul/assets/js/components/dropdown.js` + `basket.js`(select) | `skinkit/features/custom-select.js` + `.css` (통합, 선택 기능) |
+| `aisoul/assets/js/components/member.js`(우편번호·약관 제목) | `skinkit/adapters/address-form.js`, `agreement-title.js` (회원 페이지) |
+| `aisoul/assets/js/components/myshop.js`(주소록) | `skinkit/adapters/address-book.js` + `skinkit/pages/myshop.css` (주소록 페이지) |
+| `aisoul/assets/js/components/product.js`(표 → dl) | 버린다. `skinkit/pages/product.css`(CSS 블록화, 상품상세 페이지)로 대체 |
 | `aisoul/assets/js/base/common.js` | 기능별로 나눠 catalog JS 컴포넌트로 [제안] |
 | `aisoul/assets/js/front/*` | `{mall}/assets/js/` (API·SSO·임직원 등) |
 | `pages/layout/*` | `skinkit/partials/layout/*` |

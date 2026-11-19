@@ -1,0 +1,27 @@
+/*! SkinKit base/typography.css — 자동 생성. 직접 고치지 말고 skinkit/base/typography.css을 고친 뒤 다시 빌드한다 (bp layout 1024 / small 767) */
+/* ==========================================================================
+   SkinKit · base/typography.css
+   기능: 글자 스타일 클래스 (.title-*, .body-*, .script-*)
+   이유: novadeal utility.css의 클래스 이름을 그대로 유지한다.
+         바뀐 점: font-family !important 반복(53번)을 없애고 body 글꼴을 상속받는다.
+                  크기는 semantic 토큰(--sk-text-*)을 써서 쇼핑몰별로 바꿀 수 있다.
+   이름 규칙: {종류}-{크기}-{굵기}  굵기: b=700, sb=600, m=500, r=400
+   ========================================================================== */
+
+/* 제목
+   기능: 페이지·섹션 제목 */
+.title-m-b  { font-size: var(--sk-text-title-m); font-weight: 700; line-height: 1.5; letter-spacing: var(--sk-letter-spacing); }
+.title-s-b  { font-size: var(--sk-text-title-s); font-weight: 700; line-height: 1.5; letter-spacing: var(--sk-letter-spacing); }
+.title-s-sb { font-size: var(--sk-text-title-s); font-weight: 600; line-height: 1.5; letter-spacing: var(--sk-letter-spacing); }
+
+/* 본문
+   기능: 본문·설명 글자 */
+.body-l-m  { font-size: var(--sk-text-body-l); font-weight: 500; line-height: 1.5; letter-spacing: var(--sk-letter-spacing); }
+.body-m-sb { font-size: var(--sk-text-body-m); font-weight: 600; line-height: 1.5; letter-spacing: var(--sk-letter-spacing); }
+.body-m-r  { font-size: var(--sk-text-body-m); font-weight: 400; line-height: 1.5; letter-spacing: var(--sk-letter-spacing); }
+.body-s-sb { font-size: var(--sk-text-body-s); font-weight: 600; line-height: 1.5; letter-spacing: var(--sk-letter-spacing); }
+.body-s-m  { font-size: var(--sk-text-body-s); font-weight: 500; line-height: 1.5; letter-spacing: var(--sk-letter-spacing); }
+
+/* 작은 글씨
+   기능: 보조 안내, 라벨 */
+.script-m-sb { font-size: var(--sk-text-caption); font-weight: 600; line-height: 1.5; letter-spacing: var(--sk-letter-spacing); }

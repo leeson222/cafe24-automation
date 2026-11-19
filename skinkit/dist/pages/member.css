@@ -1,0 +1,48 @@
+/*! SkinKit pages/member.css — 자동 생성. 직접 고치지 말고 skinkit/pages/member.css을 고친 뒤 다시 빌드한다 (bp layout 1024 / small 767) */
+/* ==========================================================================
+   SkinKit · pages/member.css   (페이지: member/join.html, modify.html, agreement.html 상단)
+   함께 불러오는 JS: adapters/address-form.js, adapters/agreement-title.js
+   기능: 회원가입·정보수정 화면 보정
+         - 우편번호 입력칸 + 검색 버튼 한 줄 (adapter: address-form)
+         - 약관 제목의 [필수]/[선택] 표시 (adapter: agreement-title)
+   이유: novadeal member.css는 대부분 쇼핑몰 전용 래퍼(.custom-member-area)에 묶여 있어
+         카페24 기본 마크업과 adapter가 만든 요소에 대한 규칙만 옮겼다.
+   ========================================================================== */
+
+/* ------------------------------------------------------------------------
+   우편번호 + 검색 버튼
+   기능: 입력칸은 남은 폭을 채우고 버튼은 글자 폭만큼
+   카페24 의존: #postcode1, #postBtn (adapter가 span.addr-search-wrap으로 묶는다)
+   ------------------------------------------------------------------------ */
+.addr-search-wrap {
+    display: flex;
+    align-items: center;
+    gap: var(--sk-addr-search-gap);
+    width: 100%;
+}
+.addr-search-wrap > input {
+    flex: 1;
+    min-width: 0;
+}
+.addr-search-wrap > :not(input) {
+    flex: none;
+    margin: 0;
+}
+
+/* ------------------------------------------------------------------------
+   약관 [필수] / [선택]
+   기능: adapter가 분리한 <em class="required|optional">의 색·크기
+   ------------------------------------------------------------------------ */
+.agreeArea .title .check em:is(.required, .optional) {
+    margin-right: 4px;
+    font-size: var(--sk-agree-tag-fs);
+    font-style: normal;
+    font-weight: var(--sk-agree-tag-fw);
+    line-height: 1.5;
+}
+.agreeArea .title .check em.required {
+    color: var(--sk-agree-required-color);
+}
+.agreeArea .title .check em.optional {
+    color: var(--sk-agree-optional-color);
+}

@@ -1,0 +1,98 @@
+/*! SkinKit cafe24/layer.css — 자동 생성. 직접 고치지 말고 skinkit/cafe24/layer.css을 고친 뒤 다시 빌드한다 (bp layout 1024 / small 767) */
+/* ==========================================================================
+   SkinKit · cafe24/layer.css
+   기능: 카페24 레이어(.ec-base-layer) 공통 모양과 유형별 크기
+         공통 / 알림(.gAlert) / 장바구니 담기 / 장바구니 옵션 변경 / 쿠폰 다운로드 결과
+   이유: novadeal modal.css는 레이어마다 !important로 같은 값을 반복했다.
+         공통 모양을 한 번 주고, 유형별로 다른 값(너비·제목 크기)만 토큰으로 둔다.
+   제외 - #popup 안 레이어: 카페24가 테두리를 없애고 창 전체를 쓴다
+        - .typeSide: 옆에서 나오는 전체 높이 레이어라 둥글기·테두리가 어울리지 않는다
+        - z-index: 카페24 기본(배경 1000 / 레이어 1001)을 유지한다.
+          novadeal은 헤더를 999999로 올려서 레이어도 99999로 올려야 했다. SkinKit 헤더 단계는 200이다
+   ========================================================================== */
+
+/* ------------------------------------------------------------------------
+   공통 모양
+   기능: 테두리·둥글기·그림자·배경
+   우선순위: body:not(#popup)로 팝업 창을 빼면서 (1,2,1)이 되어 카페24 원본(0,1,0)보다 강하다
+   주의: overflow:hidden을 주지 않는다. 레이어 안 커스텀 select 목록이 잘린다
+   ------------------------------------------------------------------------ */
+body:not(#popup) .ec-base-layer:not(.typeSide) {
+    border: 1px solid var(--sk-layer-border);
+    border-radius: var(--sk-layer-radius);
+    box-shadow: var(--sk-layer-shadow);
+    background-color: var(--sk-layer-bg);
+}
+
+/* 제목
+   기능: 레이어 머리글 h1/h3/h5 글자
+   이유: novadeal은 600으로 선언한 뒤 700으로 다시 덮어썼다. 한 번만 둔다 */
+:is(#wrap, body) .ec-base-layer > .header > :is(h1, h3, h5) {
+    font-size: var(--sk-layer-title-fs);
+    font-weight: var(--sk-layer-title-fw);
+    line-height: 1.5;
+    color: var(--sk-color-text);
+}
+
+/* ------------------------------------------------------------------------
+   알림 레이어 버튼 줄
+   기능: 알림·옵션 변경 레이어 하단 버튼을 같은 너비로 나란히
+   이유: novadeal은 장바구니 담기·옵션 변경에 같은 규칙을 따로 썼다. 하나로 묶는다
+   ------------------------------------------------------------------------ */
+:is(#wrap, body) :is(.ec-base-layer.gAlert, #ec-basketOptionModifyLayer .ec-base-layer) .ec-base-button {
+    display: flex;
+    gap: var(--sk-layer-alert-btn-gap);
+    padding: 0 20px;
+}
+:is(#wrap, body) :is(.ec-base-layer.gAlert, #ec-basketOptionModifyLayer .ec-base-layer) .ec-base-button > a {
+    flex: 1;
+    margin: 0;
+}
+
+/* ------------------------------------------------------------------------
+   장바구니 담기 알림 (.xans-product-basketadd)
+   기능: 너비 제한, 안내 문구 크기
+   ------------------------------------------------------------------------ */
+:is(#wrap, body) .xans-product-basketadd .ec-base-layer.gAlert {
+    width: calc(100vw - var(--sk-container-gutter) * 2);
+    max-width: var(--sk-layer-alert-max-width);
+    margin: 0 auto;
+}
+:is(#wrap, body) .xans-product-basketadd .ec-base-layer.gAlert > .content p {
+    font-size: var(--sk-layer-alert-msg-fs);
+    font-weight: var(--sk-layer-alert-msg-fw);
+    line-height: 1.5;
+    color: var(--sk-color-text);
+}
+
+/* ------------------------------------------------------------------------
+   장바구니 옵션 변경 (#ec-basketOptionModifyLayer)
+   기능: 화면보다 길어지지 않게 높이 제한, 제목 크기
+   ------------------------------------------------------------------------ */
+:is(#wrap, body) #ec-basketOptionModifyLayer .ec-base-layer.typeModal {
+    max-height: var(--sk-layer-modal-max-height);
+    overflow-y: auto;
+}
+:is(#wrap, body) #ec-basketOptionModifyLayer .ec-base-layer > .header > h5 {
+    font-size: var(--sk-layer-modal-title-fs);
+}
+
+/* ------------------------------------------------------------------------
+   쿠폰 다운로드 결과 (.couponDownResult)
+   기능: 넓은 레이어
+   이유: novadeal도 !important로 너비를 바꿨다. 카페24가 너비를 inline style로 넣는 것으로 보인다 [확인 필요]
+   ------------------------------------------------------------------------ */
+.couponDownResult {
+    width: var(--sk-layer-wide-width) !important;   /* 이유: inline width를 이기기 위해 [확인 필요] */
+    max-width: calc(100vw - var(--sk-container-gutter) * 2);
+}
+
+/* 작은 화면 */
+@media (max-width: 767px /*bp.small*/) {
+    :is(#wrap, body) #ec-basketOptionModifyLayer .ec-base-layer > .header > h5 {
+        font-size: var(--sk-layer-modal-title-fs-sm);
+    }
+    .couponDownResult {
+        width: calc(100% - var(--sk-container-gutter) * 2) !important;   /* 이유: 위와 같다 */
+    }
+}

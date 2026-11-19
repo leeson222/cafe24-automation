@@ -1,0 +1,99 @@
+/* ==========================================================================
+   SkinKit · pages/myshop.css   (페이지: myshop/addr/list.html 상단)
+   함께 불러오는 JS: adapters/address-book.js
+   기능: 마이쇼핑 배송 주소록(.xans-myshop-addrlist)을 작은 화면에서 카드 목록으로 보여 준다
+         (adapter: address-book이 붙인 클래스·data-label 사용)
+   이유: novadeal myshop.js는 화면 폭이 바뀔 때마다 JS로 is-mobile 클래스를 넣고 빼고,
+         수정 버튼을 다른 칸으로 옮겼다가 되돌렸다.
+         SkinKit은 미디어쿼리 + grid-template-areas로 칸 위치만 바꾼다.
+         DOM은 한 번만 표시(클래스)하고 다시 건드리지 않는다.
+
+   adapter가 붙이는 이름
+     table.addr-table > tbody > tr.addr-item > td.addr-{check|fixed|name|recipient|phone|mobile|address|modify}
+     각 td 안쪽은 div.addr-value로 감싼다. 항목 이름은 td[data-label] (머리칸 글자에서 가져온다)
+   우선순위: :is(#wrap, body) 접두사로 공통 버튼 크기(1,2,0)·게시판 표 칸(1,2,1) 규칙보다 강하게 한다
+   ========================================================================== */
+
+/* 공통: 값 래퍼는 표에서는 아무 영향이 없게 */
+.addr-value {
+    min-width: 0;
+}
+
+@media (max-width: 1024px /*bp.layout*/) {
+    /* 표 → 블록
+       기능: 머리줄·열 너비를 숨기고 표를 블록으로 */
+    :is(#wrap, body) .xans-myshop-addrlist .addr-table,
+    :is(#wrap, body) .xans-myshop-addrlist .addr-table tbody {
+        display: block;
+        width: 100%;
+    }
+    :is(#wrap, body) .xans-myshop-addrlist .addr-table :is(thead, colgroup) {
+        display: none;
+    }
+    :is(#wrap, body) .xans-myshop-addrlist .ec-base-table:has(.addr-table) {
+        border: 0;
+    }
+
+    /* 카드 한 장 = 주소 한 줄
+       기능: [고정·수정 버튼 | 체크] / 배송지명 / 수령인 / 일반전화 / 휴대전화 / 주소
+       이유: 수정 버튼(td.addr-modify)을 옮기지 않고 grid 영역으로 고정 버튼 옆에 둔다 */
+    :is(#wrap, body) .xans-myshop-addrlist .addr-item {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        grid-template-areas:
+            "fixed modify check"
+            "name name name"
+            "recipient recipient recipient"
+            "phone phone phone"
+            "mobile mobile mobile"
+            "address address address";
+        row-gap: 10px;
+        column-gap: 6px;
+        box-sizing: border-box;
+        padding: var(--sk-addrbook-card-p);
+        border: 1px solid var(--sk-addrbook-card-border);
+        border-radius: var(--sk-addrbook-card-radius);
+    }
+    :is(#wrap, body) .xans-myshop-addrlist .addr-item + .addr-item {
+        margin-top: var(--sk-addrbook-card-gap);
+    }
+    :is(#wrap, body) .xans-myshop-addrlist .addr-item > td {
+        display: flex;
+        align-items: flex-start;
+        width: auto;
+        padding: 0;
+        border: 0;
+        text-align: left;
+    }
+    :is(#wrap, body) .xans-myshop-addrlist .addr-check { grid-area: check; }
+    :is(#wrap, body) .xans-myshop-addrlist .addr-fixed { grid-area: fixed; }
+    :is(#wrap, body) .xans-myshop-addrlist .addr-modify { grid-area: modify; }
+    :is(#wrap, body) .xans-myshop-addrlist .addr-name { grid-area: name; font-weight: 600; }
+    :is(#wrap, body) .xans-myshop-addrlist .addr-recipient { grid-area: recipient; }
+    :is(#wrap, body) .xans-myshop-addrlist .addr-phone { grid-area: phone; }
+    :is(#wrap, body) .xans-myshop-addrlist .addr-mobile { grid-area: mobile; }
+    :is(#wrap, body) .xans-myshop-addrlist .addr-address { grid-area: address; }
+
+    /* 항목 이름
+       기능: td[data-label] 글자를 값 앞에 표시 (배송지명은 이름 없이 굵게)
+       이유: 표 머리줄을 숨겼으므로 각 값이 무엇인지 알려 준다 */
+    :is(#wrap, body) .xans-myshop-addrlist :is(.addr-recipient, .addr-phone, .addr-mobile, .addr-address)[data-label]::before {
+        content: attr(data-label);
+        flex: 0 0 var(--sk-addrbook-label-width);
+        color: var(--sk-addrbook-label-color);
+    }
+    :is(#wrap, body) .xans-myshop-addrlist .addr-item .addr-value {
+        flex: 1;
+    }
+    :is(#wrap, body) .xans-myshop-addrlist .addr-modify .addr-value {
+        display: flex;
+        justify-content: flex-start;
+    }
+    /* 기능: 고정·수정 버튼을 작게
+       이유: 카드 안에서는 공통 sizeS보다 작게 쓴다 (사용 위치 예외) */
+    :is(#wrap, body) .xans-myshop-addrlist .addr-value :is(.btnNormal, .btnNormalFix, .btnSubmit, .btnSubmitFix):is(.sizeS, .sizeM) {
+        min-width: 0;
+        padding: 2px 8px;
+        font-size: var(--sk-text-caption);
+    }
+}

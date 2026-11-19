@@ -6,9 +6,11 @@
     이유: 실제 카페24 쇼핑몰에 올리기 전에 선택자 우선순위·토큰·adapter 동작을 확인한다
     주의: 카페24 기본 CSS는 로컬 workspace/target-skin/base(업로드 안 함)에서 불러온다.
           파일이 없으면 SkinKit만으로 확인된다 (우선순위 검사 일부가 의미 없어진다)
-    adapter 켜기: html의 data-sk-adapters
+    SkinKit 파일: SKINKIT:demo-css(head)·demo-js(body 끝) 블록은 build.mjs가 설정에서 만든다 (모든 공통·페이지·선택 기능)
+    CSS를 head에 두는 이유: body에서 늦게 불러오면 카페24 기본 모양 → SkinKit 모양으로 색 전환(transition)이
+          일어나는 도중에 검사가 값을 읽어 실패한다 (모바일 검사에서 확인)
 -->
-<html lang="ko" data-sk-adapters="address-form agreement-title custom-select address-book" data-sk-features="prdinfo-grid inner">
+<html lang="ko">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,8 +25,29 @@
 <link rel="stylesheet" href="../../workspace/target-skin/base/layout/basic/css/ec-base-paginate.css">
 <link rel="stylesheet" href="../../workspace/target-skin/base/layout/basic/css/ec-base-prdInfo.css">
 
-<!-- ② SkinKit → ③ 쇼핑몰 테마 -->
-<link rel="stylesheet" href="../dist/skinkit.css">
+<!-- ② SkinKit (build.mjs가 설정에서 만든다) → ③ 쇼핑몰 테마 -->
+<!--[SKINKIT:demo-css]-->
+<link rel="stylesheet" href="../dist/tokens/primitives.css">
+<link rel="stylesheet" href="../dist/tokens/semantic.css">
+<link rel="stylesheet" href="../dist/tokens/components.css">
+<link rel="stylesheet" href="../dist/base/reset.css">
+<link rel="stylesheet" href="../dist/base/typography.css">
+<link rel="stylesheet" href="../dist/base/utility.css">
+<link rel="stylesheet" href="../dist/components/button.css">
+<link rel="stylesheet" href="../dist/components/input.css">
+<link rel="stylesheet" href="../dist/components/check.css">
+<link rel="stylesheet" href="../dist/components/quantity.css">
+<link rel="stylesheet" href="../dist/components/pagination.css">
+<link rel="stylesheet" href="../dist/cafe24/layer.css">
+<link rel="stylesheet" href="../dist/cafe24/icons.css">
+<link rel="stylesheet" href="../dist/cafe24/empty.css">
+<link rel="stylesheet" href="../dist/pages/board.css">
+<link rel="stylesheet" href="../dist/pages/member.css">
+<link rel="stylesheet" href="../dist/pages/myshop.css">
+<link rel="stylesheet" href="../dist/pages/product.css">
+<link rel="stylesheet" href="../dist/features/custom-select.css">
+<link rel="stylesheet" href="../dist/features/inner.css">
+<!--[/SKINKIT:demo-css]-->
 <!-- <link rel="stylesheet" href="../themes/theme.example.css"> -->
 
 <style>
@@ -176,7 +199,13 @@
 </div></div>
 </div>
 
-<script src="../dist/skinkit.js"></script>
+<!--[SKINKIT:demo-js]-->
+<script src="../dist/adapters/core.js"></script>
+<script src="../dist/adapters/address-form.js"></script>
+<script src="../dist/adapters/agreement-title.js"></script>
+<script src="../dist/adapters/address-book.js"></script>
+<script src="../dist/features/custom-select.js"></script>
+<!--[/SKINKIT:demo-js]-->
 <script>
 /* ==========================================================================
    자동 검사

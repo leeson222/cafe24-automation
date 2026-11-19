@@ -1,0 +1,179 @@
+/*! SkinKit features/custom-select.css — 자동 생성. 직접 고치지 말고 skinkit/features/custom-select.css을 고친 뒤 다시 빌드한다 (bp layout 1024 / small 767) */
+/* ==========================================================================
+   SkinKit · features/custom-select.css   (선택 기능 — features/custom-select.js와 함께 불러오면 켜진다)
+   기능: 커스텀 select 모양 (features/custom-select.js가 만든 마크업)
+   이유: 원본 select는 브라우저마다 목록 모양이 달라 시안대로 꾸밀 수 없다.
+         novadeal의 ul/li 구조와 클래스명(custom-select*)을 그대로 쓴다.
+
+   마크업 (adapter가 원본 select 바로 뒤에 만든다)
+     <ul class="custom-select">                         ← 열림: .is-open, 비활성: .is-disabled
+       <li class="custom-select-current" data-value="">
+         <button type="button" class="custom-select-default" aria-haspopup="listbox" aria-expanded="false">
+           <span class="custom-select-text">선택된 글자</span>
+           <i aria-hidden="true"></i>                     ← 화살표 (CSS로 그린다)
+         </button>
+         <ul class="custom-select-options" role="listbox">
+           <li class="custom-select-option" role="option" data-value="">  ← .selected, .disabled, .is-focused
+   novadeal과 다른 점: .custom-select-default가 div → button (키보드로 열 수 있게)
+                       화살표가 <img>(쇼핑몰 CDN) → CSS
+   ========================================================================== */
+
+/* 전체 틀
+   기능: 목록을 선택창 기준으로 띄우기 위한 기준점 */
+.custom-select {
+    position: relative;
+    display: inline-block;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    vertical-align: middle;
+}
+.custom-select-current {
+    position: relative;
+    list-style: none;
+}
+
+/* ------------------------------------------------------------------------
+   선택창 (버튼)
+   기능: 현재 값과 화살표를 보여 주고 클릭·키보드로 목록을 연다
+   이유: <button>의 브라우저 기본 모양을 지우고 입력창 토큰과 같은 모양을 쓴다
+   ------------------------------------------------------------------------ */
+.custom-select-default {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    height: var(--sk-cselect-height);
+    margin: 0;
+    padding: 0 var(--sk-cselect-px);
+    border: var(--sk-input-border-width) solid var(--sk-cselect-border);
+    border-radius: var(--sk-cselect-radius);
+    font: inherit;
+    font-size: var(--sk-cselect-fs);
+    line-height: 1.5;
+    text-align: left;
+    color: var(--sk-cselect-color);
+    background-color: var(--sk-cselect-bg);
+    cursor: pointer;
+    transition: border-color var(--sk-duration);
+}
+.custom-select-default:hover {
+    border-color: var(--sk-input-hover-border);
+}
+.custom-select.is-open .custom-select-default {
+    border-color: var(--sk-cselect-open-border);
+}
+.custom-select-default:focus-visible {
+    outline: var(--sk-focus-width) solid var(--sk-focus-color);
+    outline-offset: var(--sk-focus-offset);
+}
+
+/* 선택된 글자
+   기능: 길면 한 줄로 자르고 … 표시 */
+.custom-select-text {
+    overflow: hidden;
+    min-width: 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* 화살표
+   기능: 아래 화살표. 열리면 위로 돌린다
+   이유: 선 두 개(border)로 그려서 색을 토큰으로 바꾼다 */
+.custom-select-default > i {
+    display: flex;
+    flex: none;
+    justify-content: center;
+    align-items: center;
+    width: 16px;
+    height: 16px;
+    transition: transform var(--sk-duration);
+}
+.custom-select-default > i::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    margin-top: -3px;
+    border-right: 1.5px solid var(--sk-cselect-icon-color);
+    border-bottom: 1.5px solid var(--sk-cselect-icon-color);
+    transform: rotate(45deg);
+}
+.custom-select.is-open .custom-select-default > i {
+    transform: rotate(180deg);
+}
+
+/* ------------------------------------------------------------------------
+   목록
+   기능: 선택창 아래에 뜨는 옵션 목록
+   이유: novadeal은 jQuery slideToggle로 열었다. CSS 클래스로만 열고 닫아 JS를 줄인다
+   ------------------------------------------------------------------------ */
+.custom-select-options {
+    display: none;
+    position: absolute;
+    top: calc(100% + var(--sk-cselect-list-gap));
+    left: 0;
+    z-index: var(--sk-z-dropdown);
+    box-sizing: border-box;
+    width: 100%;
+    max-height: var(--sk-cselect-list-max-height);
+    margin: 0;
+    padding: var(--sk-cselect-list-p);
+    overflow-y: auto;
+    border: 1px solid var(--sk-cselect-list-border);
+    border-radius: var(--sk-cselect-list-radius);
+    list-style: none;
+    background-color: var(--sk-cselect-list-bg);
+}
+.custom-select.is-open .custom-select-options {
+    display: block;
+}
+
+/* 옵션 한 줄 */
+.custom-select-option {
+    padding: var(--sk-cselect-option-py) var(--sk-cselect-option-px);
+    border-radius: var(--sk-cselect-option-radius);
+    font-size: var(--sk-cselect-fs);
+    line-height: 1.5;
+    text-align: left;
+    color: var(--sk-cselect-option-color);
+    cursor: pointer;
+}
+.custom-select-option + .custom-select-option {
+    margin-top: 4px;
+}
+/* 기능: 마우스 hover와 키보드로 이동한 옵션을 같은 모양으로 */
+.custom-select-option:hover,
+.custom-select-option.is-focused {
+    background-color: var(--sk-cselect-option-hover-bg);
+}
+.custom-select-option.selected {
+    font-weight: var(--sk-cselect-option-selected-fw);
+    color: var(--sk-cselect-option-selected-color);
+    background-color: var(--sk-cselect-option-hover-bg);
+}
+.custom-select-option.disabled {
+    color: var(--sk-cselect-option-disabled-color);
+    background-color: transparent;
+    cursor: not-allowed;
+}
+
+/* 비활성 (원본 select가 disabled일 때) */
+.custom-select.is-disabled .custom-select-default {
+    color: var(--sk-input-disabled-color);
+    background-color: var(--sk-input-disabled-bg);
+    cursor: not-allowed;
+}
+.custom-select.is-disabled .custom-select-default:hover {
+    border-color: var(--sk-cselect-border);
+}
+
+/* 작은 화면 */
+@media (max-width: 767px /*bp.small*/) {
+    .custom-select-default {
+        height: var(--sk-cselect-height-sm);
+        padding: 0 var(--sk-input-px-sm);
+    }
+}

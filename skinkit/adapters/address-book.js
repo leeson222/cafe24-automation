@@ -1,7 +1,7 @@
 /* ==========================================================================
    SkinKit · adapters/address-book.js   (이름: address-book, 선택형)
    기능: 마이쇼핑 배송 주소록 표의 칸마다 이름(class)과 항목명(data-label)을 붙이고,
-         칸 안쪽을 <div class="addr-value">로 감싼다. 배치는 cafe24/myshop.css가 한다.
+         칸 안쪽을 <div class="addr-value">로 감싼다. 배치는 pages/myshop.css가 한다.
    이유: novadeal myshop.js는 화면 폭이 바뀔 때마다 is-mobile을 넣고 빼며 수정 버튼을 옮겼다가
          되돌렸다(resize + body 감시). 표시만 한 번 하고 배치는 CSS grid로 바꾸면
          화면 폭이 바뀌어도 DOM을 다시 건드릴 필요가 없다.
@@ -13,8 +13,13 @@
 (function (window, document) {
     'use strict';
 
-    var SkinKit = window.SkinKit;
-    if (!SkinKit || !SkinKit.adapters) return;
+    // 기능: core.js가 먼저 불렸든 나중에 불리든 등록한다
+    // 이유: 카페24가 페이지 @js와 레이아웃 @js의 출력 순서를 보장하지 않을 수 있다. 먼저 불리면 대기열에 맡긴다
+    var SkinKit = window.SkinKit = window.SkinKit || {};
+    function register(name, def) {
+        if (SkinKit.adapters) SkinKit.adapters.register(name, def);
+        else (SkinKit._pendingAdapters = SkinKit._pendingAdapters || []).push([name, def]);
+    }
 
     var COLUMNS = ['check', 'fixed', 'name', 'recipient', 'phone', 'mobile', 'address', 'modify'];
 
@@ -71,7 +76,7 @@
         row.setAttribute('data-sk-adapted', 'address-book');
     }
 
-    SkinKit.adapters.register('address-book', {
+    register('address-book', {
         match: '.xans-myshop-addrlist, .xans-myshop-addrlist tr.xans-record-',
         run: function (root) {
             root.querySelectorAll('.xans-myshop-addrlist .ec-base-table table').forEach(function (table) {
